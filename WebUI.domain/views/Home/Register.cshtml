@@ -1,4 +1,5 @@
 ﻿@model OnlineBanking.Domain.Entities.Customer
+@using Juice
 
 @{ ViewData["Title"] = "Registration-Form"; }
 
@@ -42,7 +43,7 @@
         </div>
         <div>
             <label asp-for="Birthday">Enter Birthday</label>
-            <input asp-for="Birthday" type="date" />
+            <input Juice:Datepicker asp-for="Birthday" type="date" />
         </div>
 
 
