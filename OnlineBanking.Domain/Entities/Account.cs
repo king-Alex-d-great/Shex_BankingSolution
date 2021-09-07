@@ -23,8 +23,6 @@ namespace OnlineBanking.Domain.Entities
         [Column(TypeName = "decimal(38,2)")]
         public decimal Balance { get; set; }
 
-        public AccountType AccountType { get; set; }
-
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }

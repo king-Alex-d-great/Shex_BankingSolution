@@ -17,6 +17,7 @@ namespace OnlineBanking.Domain.Entities
                      FirstName = "Dara",
                      LastName = "Success",
                      Email = "dara@domain.com",
+                     AccountType =Enumerators.AccountType.Saving,
                      Birthday = new DateTime(2000, 06, 21),
                      Gender = Enumerators.Gender.Female
                  },
@@ -27,6 +28,7 @@ namespace OnlineBanking.Domain.Entities
                      FirstName = "Obinna",
                      LastName = "Achara",
                      Email = "obinna@gmail.com",
+                     AccountType =Enumerators.AccountType.Saving,
                      Birthday = new DateTime(2004, 10, 12),
                      Gender = Enumerators.Gender.Male
                  }
@@ -42,7 +44,6 @@ namespace OnlineBanking.Domain.Entities
                     CustomerId = 1,
                     AccountNumber = 0211979756,
                     Balance =  23_456_782_340,
-                    AccountType =Enumerators.AccountType.Saving,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     CreatedBy = "Dara",
@@ -55,7 +56,6 @@ namespace OnlineBanking.Domain.Entities
                     CustomerId = 2,
                     AccountNumber = 0317092802,
                     Balance = 23_456_782_340,
-                    AccountType = Enumerators.AccountType.Saving,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     CreatedBy = "Obinna",

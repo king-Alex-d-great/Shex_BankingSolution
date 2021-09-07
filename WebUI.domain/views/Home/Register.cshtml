@@ -1,0 +1,53 @@
+﻿﻿@model OnlineBanking.Domain.Entities.Customers
+@{
+    ViewData["Title"] = "Registration-Form";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+    <form asp-action="" method="">
+        <h1>Registration Form</h1>
+        <div>
+            <label asp-for="FirstName">Enter First Name:</label>
+            <input asp-for="FirstName" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="LastName">Enter Last Name:</label>
+            <input asp-for="LastName" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Email">Provide Your Email</label>
+            <input asp-for="Email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Gender">Select Gender</label>
+            <select asp-for="Gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="PreferNotToSay">Prefer not to say</option>
+            </select>
+        </div>
+        <div>
+            <label asp-for="AccountType">Chose Account Type</label>
+            <select asp-for="AccountType">
+                <option value="Saving">Saving</option>
+                <option value="Student">Student</option>
+            </select>
+        </div>
+        <div>
+            <label asp-for="Birthday">Enter Birthday</label>
+            <input asp-for="Birthday" type="date" />
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</body>
+</html>

@@ -12,7 +12,12 @@ namespace OnlineBanking.Domain.Entities
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
         }
-        
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Seed();
+        }
+
 
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }

@@ -20,6 +20,8 @@ namespace OnlineBanking.Domain.Entities
         [Required, EmailAddress]
         public string Email { get; set; }
 
+        public AccountType AccountType { get; set; }
+
         [Required]
         public DateTime Birthday { get; set; }
 
