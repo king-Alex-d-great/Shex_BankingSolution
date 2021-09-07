@@ -1,17 +1,26 @@
-﻿@{ ViewData["Title"] = "Home-Page"; }
+﻿
+
+
 <!DOCTYPE html>
 <html>
 <head>
+ <meta name="viewport" content="width=device-width" />
     <title>Home</title>
 </head>
 <body>
-    <h1>Hello</h1>
-    <p>Checking it out</p>
-    <a asp-action="Register" asp-controller="Home">Register</a>
+    <div>
+        <div>
+            <h1>Hello</h1>
 
-    <span>
-        <a asp-page="Home" asp-action="Register">Reg</a>
-    </span>
+            <a href="@Url.Action("Register", "home")">
+                Click Here To Register
+            </a>
 
+        </div>
+        
+        
+    </div>
+ 
+    
 </body>
 </html>
