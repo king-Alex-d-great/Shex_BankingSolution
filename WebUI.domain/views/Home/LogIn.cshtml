@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "LogIn";
 }
+@{ 
+    Layout = "_Layout";
+}
 
 
 <!DOCTYPE html>
@@ -13,17 +16,17 @@
 <body>
     <div>
         <h1>
-            Please Enter Your Correct Details To Sign Into your account
+            Please Enter Your Details To Sign Into your account
         </h1>
     </div>
     <div>
         <form asp-action="LogIn" method="post">
             <div class="form-group">
-                <label asp-for="Email">Quote Author:</label>
+                <label asp-for="Email">Email:</label>
                 <input asp-for="Email" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Password">Quote:</label>
+                <label asp-for="Password">Password:</label>
                 <input asp-for="Password" class="form-control" />
             </div>
             <button type="submit" class="btn btn-primary">SUBMIT INPUT</button>

@@ -6,7 +6,7 @@ namespace OnlineBanking.Domain.Enumerators
 {
   public enum AccountType
     {
-        Saving = 1,
+        Savings = 1,
         Student
     }
 }
