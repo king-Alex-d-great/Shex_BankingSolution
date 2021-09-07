@@ -16,8 +16,4 @@
     <ProjectReference Include="..\OnlineBanking.Domain\OnlineBanking.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>
