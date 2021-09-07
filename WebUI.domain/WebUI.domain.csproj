@@ -15,4 +15,9 @@
     <ProjectReference Include="..\OnlineBanking.Domain\OnlineBanking.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+
 </Project>
