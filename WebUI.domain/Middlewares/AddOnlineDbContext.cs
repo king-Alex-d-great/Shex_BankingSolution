@@ -10,13 +10,16 @@ using OnlineBanking.Domain.Entities;
 
 namespace WebUI.domain.Middlewares
 {
-    public static class DbExtensions
+    public static class DbsExtension
     {
         public static IServiceCollection AddDBConnection(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("OBConnection");
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("OBConnection")));
+               options.UseSqlServer(configuration.GetConnectionString("OBConnection")));
+            /*var connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Integrated Security = True; Connect Timeout = 60; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False";
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString(connectionString)));*/
 
             return services;
         }
