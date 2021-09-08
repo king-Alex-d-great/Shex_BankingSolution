@@ -61,10 +61,10 @@ namespace OnlineBanking.Domain.Migrations
                             Id = 1,
                             AccountNumber = 211979756,
                             Balance = 23456782340m,
-                            CreatedAt = new DateTime(2021, 9, 7, 16, 5, 16, 192, DateTimeKind.Utc).AddTicks(6793),
+                            CreatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(1519),
                             CreatedBy = "Dara",
                             CustomerId = 1,
-                            UpdatedAt = new DateTime(2021, 9, 7, 16, 5, 16, 192, DateTimeKind.Utc).AddTicks(7447),
+                            UpdatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(2115),
                             UpdatedBy = "Dara"
                         },
                         new
@@ -72,10 +72,10 @@ namespace OnlineBanking.Domain.Migrations
                             Id = 2,
                             AccountNumber = 317092802,
                             Balance = 23456782340m,
-                            CreatedAt = new DateTime(2021, 9, 7, 16, 5, 16, 192, DateTimeKind.Utc).AddTicks(9261),
+                            CreatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(3808),
                             CreatedBy = "Obinna",
                             CustomerId = 2,
-                            UpdatedAt = new DateTime(2021, 9, 7, 16, 5, 16, 192, DateTimeKind.Utc).AddTicks(9283),
+                            UpdatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(3836),
                             UpdatedBy = "Obinna"
                         });
                 });

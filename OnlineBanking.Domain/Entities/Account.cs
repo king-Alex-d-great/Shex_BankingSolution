@@ -30,5 +30,11 @@ namespace OnlineBanking.Domain.Entities
         public string CreatedBy { get; set; }
 
         public string UpdatedBy { get; set; }
+
+        public Account()
+        {
+            this.CreatedAt = DateTime.UtcNow;
+            this.UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
