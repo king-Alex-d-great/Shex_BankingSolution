@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OnlineBanking.Domain.Entities;
 using WebUI.domain.Middlewares;
+using OnlineBanking.Domain.UnitOfWork;
+using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Repositories;
 
 namespace WebUI.domain
 {
@@ -28,6 +31,7 @@ namespace WebUI.domain
         {
             services.AddDBConnection(Configuration);
             services.AddControllersWithViews();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,9 +41,20 @@ namespace WebUI.domain
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
-            
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -5,7 +5,7 @@ using OnlineBanking.Domain.Entities;
 
 namespace OnlineBanking.Domain.Interfaces.Repositories
 {
-   public interface IAccountRepository: IRepository<Account>
-   {
-   }
+    public interface IUserRepository : IRepository<User>
+    {
+    }
 }
