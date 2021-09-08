@@ -36,7 +36,7 @@ namespace WebUI.domain.Controllers
         }
 
         [HttpPost]
-        [Route("Register")]
+        
         public IActionResult Register(Customer customerModel)
         {
             try
