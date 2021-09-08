@@ -76,8 +76,8 @@ namespace OnlineBanking.Domain.Services
         public Account Register(RegisterViewModel model)
         {
             Account account = null;
-            try
-            {
+            /*try
+            {*/
                 if (!Validate(model))
                 {
                     return null ;
@@ -88,7 +88,7 @@ namespace OnlineBanking.Domain.Services
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Email = model.Email,
-                    IsActive = true,
+                    IsActive = model.IsActive,
                     Password = model.ConfirmPassword,
                     AccountNumber = (RandomNumberGenerator.GetInt32(1000, 9999) * RandomNumberGenerator.GetInt32(10000, 99999)).ToString(),
                     AccountType = model.AccountType,
@@ -100,12 +100,12 @@ namespace OnlineBanking.Domain.Services
                 _unitOfWork.Entity.Add(account);
                 _unitOfWork.Commit();
                 Console.WriteLine("Success!\n");
-            }
-            catch (Exception error)
+           
+            /*catch (Exception error)
             {
                 Console.WriteLine(error.Message);
                 Console.WriteLine(error.InnerException);
-            }
+            }*/
             return account;
         }
 
@@ -149,10 +149,9 @@ namespace OnlineBanking.Domain.Services
             var error = string.IsNullOrWhiteSpace(model.Email) ? ErrorMessage("Email", out int count) :
             string.IsNullOrWhiteSpace(model.FirstName) ? ErrorMessage("FirstName", out count) :
             string.IsNullOrWhiteSpace(model.LastName) ? ErrorMessage("LastName", out count) :
-
             string.IsNullOrWhiteSpace(model.Password) ? ErrorMessage("Password", out count) : string.Empty;
 
-            if (string.IsNullOrWhiteSpace(error))
+            if (string.IsNullOrEmpty(error))
             {
                 return true;
             }

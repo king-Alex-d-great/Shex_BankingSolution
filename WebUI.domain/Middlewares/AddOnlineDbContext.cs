@@ -16,10 +16,7 @@ namespace WebUI.domain.Middlewares
         {
             var connectionString = configuration.GetConnectionString("OBConnection");
             services.AddDbContext<AppDbContext>(options =>
-               options.UseSqlServer(configuration.GetConnectionString("OBConnection")));
-            /*var connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Integrated Security = True; Connect Timeout = 60; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False";
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString(connectionString)));*/
+               options.UseSqlServer(configuration.GetConnectionString("OBConnection")));            
 
             return services;
         }
