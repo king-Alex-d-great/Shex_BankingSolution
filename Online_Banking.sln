@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineBanking.Domain", "OnlineBanking.Domain\OnlineBanking.Domain.csproj", "{36709233-E6FF-498E-819C-F15F15223F56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI.domain", "WebUI.domain\WebUI.domain.csproj", "{E9B258B6-B740-4A6A-AE48-3758C873218A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI.domain", "WebUI.domain\WebUI.domain.csproj", "{E9B258B6-B740-4A6A-AE48-3758C873218A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
