@@ -10,7 +10,8 @@ namespace OnlineBanking.Domain.Entities
 {
    public class Account: IEntity
     {
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; }
 
         public int? UserId { get; set; }
 
@@ -23,18 +24,14 @@ namespace OnlineBanking.Domain.Entities
         [Column(TypeName = "decimal(38,2)")]
         public decimal Balance { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         public string CreatedBy { get; set; }
 
         public string UpdatedBy { get; set; }
 
-        public Account()
-        {
-            this.CreatedAt = DateTime.UtcNow;
-            this.UpdatedAt = DateTime.UtcNow;
-        }
+       
     }
 }

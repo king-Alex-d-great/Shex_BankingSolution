@@ -6,17 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Repositories;
 using OnlineBanking.Domain.UnitOfWork;
+using WebUI.domain.Interfaces.Services;
+using WebUI.domain.Models;
 
 namespace WebUI.domain.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppDbContext unitOfWork;
+        private readonly ICustomerService _customerService;
 
-        public HomeController(AppDbContext dbContext)
+        public HomeController(ICustomerService customerService)
         {
-            unitOfWork = dbContext;
+            _customerService = customerService;
         }
+
 
         //private readonly IUnitOfWork unitOfWork;
 
@@ -37,7 +40,7 @@ namespace WebUI.domain.Controllers
 
         [HttpPost]
         
-        public IActionResult Register(Customer customerModel)
+        public IActionResult Register(CustomerViewModel customerModel)
         {
             try
             {
@@ -45,15 +48,14 @@ namespace WebUI.domain.Controllers
                 {
                     return View();
                 }
-                else
-                {
-                    unitOfWork.Customers.Add(customerModel);
-                    unitOfWork.SaveChanges();
-                    return RedirectToAction("Index");
-                }                
+               
+                _customerService.Add(customerModel);
+                return RedirectToAction("Index");
+                               
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ModelState.AddModelError("", ex.Message);
                 return View();
             }
         }

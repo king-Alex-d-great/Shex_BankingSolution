@@ -21,10 +21,9 @@ namespace OnlineBanking.Domain.Migrations
 
             modelBuilder.Entity("OnlineBanking.Domain.Entities.Account", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccountNumber")
                         .HasMaxLength(10)
@@ -54,30 +53,6 @@ namespace OnlineBanking.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountNumber = 211979756,
-                            Balance = 23456782340m,
-                            CreatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(1519),
-                            CreatedBy = "Dara",
-                            CustomerId = 1,
-                            UpdatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(2115),
-                            UpdatedBy = "Dara"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountNumber = 317092802,
-                            Balance = 23456782340m,
-                            CreatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(3808),
-                            CreatedBy = "Obinna",
-                            CustomerId = 2,
-                            UpdatedAt = new DateTime(2021, 9, 7, 23, 21, 11, 653, DateTimeKind.Utc).AddTicks(3836),
-                            UpdatedBy = "Obinna"
-                        });
                 });
 
             modelBuilder.Entity("OnlineBanking.Domain.Entities.Customer", b =>
@@ -87,6 +62,9 @@ namespace OnlineBanking.Domain.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("AccountType")
                         .HasColumnType("int");
 
@@ -94,11 +72,9 @@ namespace OnlineBanking.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -106,35 +82,14 @@ namespace OnlineBanking.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.HasIndex("AccountId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountType = 1,
-                            Birthday = new DateTime(2000, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "dara@domain.com",
-                            FirstName = "Dara",
-                            Gender = 1,
-                            LastName = "Success"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountType = 1,
-                            Birthday = new DateTime(2004, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "obinna@gmail.com",
-                            FirstName = "Obinna",
-                            Gender = 0,
-                            LastName = "Achara"
-                        });
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("OnlineBanking.Domain.Entities.User", b =>
@@ -147,6 +102,17 @@ namespace OnlineBanking.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("OnlineBanking.Domain.Entities.Customer", b =>
+                {
+                    b.HasOne("OnlineBanking.Domain.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 #pragma warning restore 612, 618
         }

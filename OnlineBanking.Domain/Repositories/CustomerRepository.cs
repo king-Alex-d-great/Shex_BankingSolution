@@ -9,9 +9,11 @@ namespace OnlineBanking.Domain.Repositories
 {
     public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
+       
+
         public CustomerRepository(DbContext context) : base(context)
         {
-
+           
         }
     }
 }

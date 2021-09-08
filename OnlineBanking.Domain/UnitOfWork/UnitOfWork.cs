@@ -5,27 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineBanking.Domain.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext _context;
-
-        private IRepository<Customer> _customers;
-        private IRepository<Account> _accounts;
-        private IRepository<User> _users;
-
-        public UnitOfWork(AppDbContext context)
+        private readonly DbContext _context;
+        
+        public UnitOfWork(DbContext context)
         {
             _context = context;
         }
 
-        public IRepository<Account> Accounts { get { return _accounts ??= _accounts = new AccountRepository(_context); } }
-
-        public IRepository<User> Users { get { return _users ??= _users = new UserRepository(_context); } }
-
-        public IRepository<Customer> Customers { get { return _customers ??= _customers = new CustomerRepository(_context); } }
 
         public int Commit()
         {
@@ -37,9 +29,5 @@ namespace OnlineBanking.Domain.UnitOfWork
             return await _context.SaveChangesAsync();
         }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
     }
 }
