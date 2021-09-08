@@ -1,49 +1,53 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using OnlineBanking.Domain.Entities;
+using OnlineBanking.Domain.Interfaces.Services;
+using OnlineBanking.Domain.Model;
+using OnlineBanking.Domain.Services;
+using OnlineBanking.Domain.UnitOfWork;
 
 namespace WebUI.domain.Controllers
 {
     public class HomeController : Controller
     {
-        AppDbContext dbContext = new AppDbContext();
-        public IActionResult Index()
+        static IAccountService AccountService = new AccountService(new UnitOfWork<Account>(new AppDbContext()));
+
+        private IActionResult Index()
         {
             return View();
         }
         [HttpGet]
-        public IActionResult SignUp()
+        private IActionResult SignUp()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult SignUp(Account account)
+        private IActionResult SignUp(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-               
-               return View("HomePage", account);
-            }
-            else
-            {
-               return View();
-            }
+            if (!ModelState.IsValid)
+             return View();
+            var account = AccountService.Register(model); 
+            return View("HomePage", account);
+        }
+        private IActionResult LogOut()
+        {
+            return View("Index");
         }
         [HttpGet]
-        public IActionResult LogIn()
+        private IActionResult LogIn()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult LogIn(LoginDetail loginDetail)
-        {
+        private IActionResult LogIn(LoginViewModel model)
+        {            
             if (!ModelState.IsValid)
                 return View();
             //access db and use login details to get acoount and pass that into view
-            var account = dbContext.Accounts.Where(a => a.Email == loginDetail.Email && a.ConfirmPassword == loginDetail.Password);
-            return View("HomePage", account);           
+            var account = AccountService.Login(model, out Account LoginAccount);
+            return View("HomePage", LoginAccount);           
         }
-        public IActionResult HomePage()
+        private IActionResult HomePage()
         {
             return View();
         }
