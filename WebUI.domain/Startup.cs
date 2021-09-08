@@ -23,11 +23,12 @@ namespace WebUI.domain
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            //configuration.GetConnectionString();
         }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDBConnection(Configuration);
-            services.AddControllersWithViews();
+            services.AddControllersWithViews();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +40,7 @@ namespace WebUI.domain
             }
 
             app.UseRouting();
+            
             
             app.UseEndpoints(endpoints =>
             {

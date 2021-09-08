@@ -9,7 +9,7 @@ namespace OnlineBanking.Domain.Repositories
 {
     public class AccountRepository : Repository<Account>, IAccountRepository
     {
-        public AccountRepository(DbContext context ):base(context)
+        public AccountRepository(AppDbContext context ):base(context)
         {
             
         }

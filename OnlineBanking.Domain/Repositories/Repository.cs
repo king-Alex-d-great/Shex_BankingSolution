@@ -5,15 +5,15 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Repositories;
 
 namespace OnlineBanking.Domain.Repositories
 {
      public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
      {
-         private readonly DbContext _dbContext;
-
-        public Repository(DbContext dbContext)
+         private readonly AppDbContext _dbContext;
+        public Repository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
