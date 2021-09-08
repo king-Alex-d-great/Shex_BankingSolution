@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OnlineBanking.Domain.Entities
 {
-    class Address
+    public class Address
     {
         public int AddressId { get; set; }
 
