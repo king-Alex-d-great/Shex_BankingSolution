@@ -12,39 +12,39 @@ namespace WebUI.domain.Controllers
     {
         static IAccountService AccountService = new AccountService(new UnitOfWork<Account>(new AppDbContext()));
 
-        private IActionResult Index()
+        public IActionResult Index()
         {
             return View();
         }
         [HttpGet]
-        private IActionResult SignUp()
+        public IActionResult SignUp()
         {
             return View();
         }
         [HttpPost]
-        private IActionResult SignUp(RegisterViewModel model)
+        public IActionResult SignUp(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
              return View();
             var account = AccountService.Register(model); 
             return View("HomePage", account);
         }
-        private IActionResult LogOut()
+        public IActionResult LogOut()
         {
             return View("Index");
         }
         [HttpGet]
-        private IActionResult LogIn()
+        public IActionResult LogIn()
         {
             return View();
         }
         [HttpPost]
-        private IActionResult LogIn(LoginViewModel model)
+        public IActionResult LogIn(LoginViewModel model)
         {            
             if (!ModelState.IsValid)
                 return View();
             //access db and use login details to get acoount and pass that into view
-            var account = AccountService.Login(model, out Account LoginAccount);
+            AccountService.Login(model, out Account LoginAccount);
             return View("HomePage", LoginAccount);           
         }
         private IActionResult HomePage()

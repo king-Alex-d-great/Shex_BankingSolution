@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using OnlineBanking.Domain.Enumerators;
 using OnlineBanking.Domain.Interfaces;
@@ -8,6 +9,7 @@ namespace OnlineBanking.Domain.Entities
 {
    public class Account: IEntity
     {
+       
         public Guid Id { get; set; }
         public int UserId { get; set; }
         public int CustomerId { get; set; }

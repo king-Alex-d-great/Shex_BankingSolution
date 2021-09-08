@@ -12,15 +12,12 @@ namespace OnlineBanking.Domain.UnitOfWork
     {
         private readonly AppDbContext _context;   
         public IRepository<Tentity> _entity { get; set; }
-
-
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
-        }
-        
-        public IRepository<Tentity> Accounts { get { return _entity ??= _entity = new Repository<Tentity>(_context); } }
-       
+        }        
+        public  IRepository<Tentity> Entity { get { return _entity ??= _entity = new Repository<Tentity>(_context); } }       
+
         public int Commit()
         {
             return _context.SaveChanges();

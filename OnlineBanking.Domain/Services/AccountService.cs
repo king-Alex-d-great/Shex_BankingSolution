@@ -10,10 +10,8 @@ namespace OnlineBanking.Domain.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IUnitOfWork<Account> _unitOfWork;
-
-
-        public AccountService(IUnitOfWork<Account> unitOfWork)
+        private readonly UnitOfWork<Account> _unitOfWork;
+        public AccountService(UnitOfWork<Account> unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -21,7 +19,6 @@ namespace OnlineBanking.Domain.Services
         {
             throw new NotImplementedException();
         }
-
         public Account Login(LoginViewModel model, out Account account)
         {
             bool isValidated = false;
@@ -93,15 +90,14 @@ namespace OnlineBanking.Domain.Services
                     Email = model.Email,
                     IsActive = true,
                     Password = model.ConfirmPassword,
-                    AccountNumber = (RandomNumberGenerator.GetInt32(9999) * RandomNumberGenerator.GetInt32(99999)).ToString(),
+                    AccountNumber = (RandomNumberGenerator.GetInt32(1000, 9999) * RandomNumberGenerator.GetInt32(10000, 99999)).ToString(),
                     AccountType = model.AccountType,
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Shola nejo",
                     Customer = new Customer(),
                     Balance = model.AccountType == Enumerators.AccountType.Savings ? 5000 : 0,
                 };
-
-                _unitOfWork._entity.Add(account);
+                _unitOfWork.Entity.Add(account);
                 _unitOfWork.Commit();
                 Console.WriteLine("Success!\n");
             }
