@@ -1,5 +1,7 @@
-﻿@{ 
-    Layout = "_LoginPartial";
+﻿@model Account
+@{
+    ViewData["Title"] = "Home Page";
 }
 
-@{ ViewData["Title"] = "Home Page"; }
+<h1>@Model?.Email</h1>
+
