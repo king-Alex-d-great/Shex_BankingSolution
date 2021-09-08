@@ -2,5 +2,37 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@{ 
+    Layout = "_Layout";
+}
 
-<h1>Login</h1>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name=" viewport" content="width=device-width" />
+    <title>ShEx Sign In Page</title>
+</head>
+<body>
+    <div>
+        <h1>
+            Please Enter Your Details To Sign Into your account
+        </h1>
+    </div>
+    <div>
+        <form asp-action="LogIn" method="post">
+            <div class="form-group">
+                <label asp-for="Email">Email:</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Password:</label>
+                <input asp-for="Password" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">SUBMIT INPUT</button>
+        </form>
+    </div>
+
+
+</body>
+</html>
