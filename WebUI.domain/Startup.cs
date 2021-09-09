@@ -61,6 +61,7 @@ namespace WebUI.domain
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

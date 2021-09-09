@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,13 @@ namespace WebUI.domain.Middlewares
             // var connectionString = configuration.GetConnectionString("OBConnection");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("OBConnection")));
+
+            
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = false;
+            } ).AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             return services;
         }

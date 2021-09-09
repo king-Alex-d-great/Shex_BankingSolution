@@ -21,7 +21,7 @@ namespace WebUI.domain.Services
             _customerRepo = customerRepo;
         }
 
-        public void Add(CustomerViewModel model )
+        public void Add(CustomerViewModel model)
         {
             var customer = new Customer
             {
