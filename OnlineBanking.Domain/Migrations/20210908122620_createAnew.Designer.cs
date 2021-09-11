@@ -10,7 +10,7 @@ using OnlineBanking.Domain.Entities;
 namespace OnlineBanking.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210908112716_createAnew")]
+    [Migration("20210908122620_createAnew")]
     partial class createAnew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

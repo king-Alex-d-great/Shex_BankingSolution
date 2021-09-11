@@ -11,6 +11,9 @@ namespace OnlineBanking.Domain.Entities
     {
        
         public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public bool? IsActive { get; set; }
         public int? UserId { get; set; }
         public int? CustomerId { get; set; }
         public Customer Customer { get; set; }
@@ -24,9 +27,7 @@ namespace OnlineBanking.Domain.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public bool? IsActive { get; set; }
+        
 
        
     }

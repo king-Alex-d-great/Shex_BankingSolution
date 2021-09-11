@@ -43,7 +43,7 @@ namespace WebUI.domain.Controllers
         {            
             if (!ModelState.IsValid)
                 return View();
-            //access db and use login details to get acoount and pass that into view
+           /* //access db and use login details to get account and pass that into view*/
             AccountService.Login(model, out Account LoginAccount);
             return View("HomePage", LoginAccount);           
         }

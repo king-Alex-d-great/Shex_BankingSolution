@@ -10,8 +10,8 @@ using OnlineBanking.Domain.Entities;
 namespace OnlineBanking.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210907103458_initial")]
-    partial class initial
+    [Migration("20210908124431_createDb")]
+    partial class createDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,31 +30,51 @@ namespace OnlineBanking.Domain.Migrations
                     b.Property<string>("AccountNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AccountType")
+                    b.Property<int?>("AccountType")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Balance")
+                    b.Property<decimal?>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("ConfirmPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Accounts");
                 });
@@ -81,6 +101,15 @@ namespace OnlineBanking.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("OnlineBanking.Domain.Entities.Account", b =>
+                {
+                    b.HasOne("OnlineBanking.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
                 });
 #pragma warning restore 612, 618
         }

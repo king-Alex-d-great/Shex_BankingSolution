@@ -7,6 +7,7 @@ namespace OnlineBanking.Domain.Model
     {
         [Required(ErrorMessage ="Email Required")]
         public string UsernameEmail { get; set; }
+        [Required(ErrorMessage = " Password Required")]
         public string Password { get; set; }
 
     }
