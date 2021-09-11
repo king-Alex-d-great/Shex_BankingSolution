@@ -4,7 +4,9 @@ using System.Security.Cryptography;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Services;
 using OnlineBanking.Domain.Model;
+using OnlineBanking.Domain.Encryption;
 using OnlineBanking.Domain.UnitOfWork;
+using System.Text;
 
 namespace OnlineBanking.Domain.Services
 {
@@ -78,6 +80,8 @@ namespace OnlineBanking.Domain.Services
             Account account = null;
             /*try
             {*/
+            var salt = PasswordHasher.GetSalt();
+
                 if (!Validate(model))
                 {
                     return null ;
@@ -89,7 +93,7 @@ namespace OnlineBanking.Domain.Services
                     LastName = model.LastName,
                     Email = model.Email,
                     IsActive = model.IsActive,
-                    Password = model.ConfirmPassword,
+                    Password = PasswordHasher.HashPassword(Encoding.UTF8.GetBytes(model.ConfirmPassword), Encoding.UTF8.GetBytes(salt)),
                     AccountNumber = (RandomNumberGenerator.GetInt32(1000, 9999) * RandomNumberGenerator.GetInt32(10000, 99999)).ToString(),
                     AccountType = model.AccountType,
                     CreatedAt = DateTime.Now,

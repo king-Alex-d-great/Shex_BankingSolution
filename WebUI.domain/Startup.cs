@@ -41,6 +41,7 @@ namespace WebUI.domain
             }
 
             app.UseRouting();
+            app.UseStaticFiles();
             
             
             app.UseEndpoints(endpoints =>
