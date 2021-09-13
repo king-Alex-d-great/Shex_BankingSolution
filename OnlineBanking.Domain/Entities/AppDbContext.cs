@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OnlineBanking.Domain.Entities
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+   public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext() { }
 
@@ -18,14 +18,14 @@ namespace OnlineBanking.Domain.Entities
             optionsBuilder.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Database = ShEx; Integrated Security = True; Connect Timeout = 60; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False");
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
 
-        public  DbSet<User> Users { get; set; }
+        
+        public DbSet<User>  Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<Customer> Customers { get; set; }       
+        public DbSet<Customer> Customers { get; set; }
+        public  DbSet<AppRole> Roles { get; set; }
+
+            
 
     }
 }

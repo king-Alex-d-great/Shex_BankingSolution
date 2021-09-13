@@ -30,6 +30,7 @@ namespace WebUI.domain.Controllers
         {
             return View();
         }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -81,6 +82,44 @@ namespace WebUI.domain.Controllers
         {
             return View();
         }
+
+        public IActionResult EnrollCustomer()
+        {
+            return View(new EnrollCustomerViewModel());
+        }
+
+        public async Task<IActionResult> EnrollCustomer(EnrollCustomerViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = new User
+            {
+                FullName = $"{model.FirstName} {model.LastName}",
+                Email = model.Email,
+                UserName = model.Email
+            };
+            var result = await _userManager.CreateAsync(user, new Guid().ToString("N").Substring(0,8));
+            if (result.Succeeded)
+            {
+                new Customer
+                {
+                    UserId = user.Id,
+                    Birthday = model.Birthday,
+                    Gender = model.Gender,
+                    Account = new Account
+                    {
+                        AccountType = model.AccountType,
+
+                        
+                    }
+                }
+            }
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {

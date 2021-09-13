@@ -17,9 +17,9 @@ namespace WebUI.domain.Middlewares
             services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(configuration.GetConnectionString("OBConnection")));
 
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<User, AppRole>(options =>
             {
-                // options.SignIn.RequireConfirmedEmail = false; //defaults to false
+                options.SignIn.RequireConfirmedEmail = false; //defaults to false
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = true;
@@ -29,6 +29,13 @@ namespace WebUI.domain.Middlewares
                 options.Lockout.AllowedForNewUsers = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+            
+            // services.AddIdentity<User, IdentityRole>(options =>
+            // {
+            //     options.SignIn.RequireConfirmedEmail = false;
+            // } ).AddEntityFrameworkStores<AppDbContext>()
+            //     .AddDefaultTokenProviders();
 
             return services;
         }
