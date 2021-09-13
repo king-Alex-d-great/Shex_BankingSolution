@@ -28,6 +28,7 @@ namespace WebUI.domain
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            //configuration.GetConnectionString();
         }
         public void ConfigureServices(IServiceCollection services)
         {
@@ -64,6 +65,9 @@ namespace WebUI.domain
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStaticFiles();
+            
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
