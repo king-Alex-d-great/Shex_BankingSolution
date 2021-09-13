@@ -10,7 +10,7 @@ namespace OnlineBanking.Domain.Entities
 {
   public class Customer: IEntity
     {
-       
+      
         public int Id { get; set; }
 
         public string UserId { get; set; }
@@ -25,6 +25,8 @@ namespace OnlineBanking.Domain.Entities
 
         [ForeignKey(nameof(AccountId))]
         public Account Account { get; set; }
+
+        
 
     }
 }

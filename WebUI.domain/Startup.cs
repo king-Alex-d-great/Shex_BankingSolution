@@ -39,8 +39,6 @@ namespace WebUI.domain
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustomerService, CustomerService>();
-          
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

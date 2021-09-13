@@ -8,11 +8,13 @@ using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Services;
 using OnlineBanking.Domain.Services;
 using WebUI.domain.Model;
+using OnlineBanking.Domain.Enumerators;
 
 namespace WebUI.domain.Controllers
 {
     public class AccountController : Controller
     {
+        //should hold crud operation for user
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
@@ -50,6 +52,7 @@ namespace WebUI.domain.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
                     return View("HomePage", user);
                 }
                 foreach (var error in result.Errors)
@@ -70,7 +73,7 @@ namespace WebUI.domain.Controllers
             return View(new EnrollCustomerViewModel());
         }
 
-        public async Task<IActionResult> EnrollCustomer(EnrollCustomerViewModel model)
+        /*public async Task<IActionResult> EnrollCustomer(EnrollCustomerViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +103,7 @@ namespace WebUI.domain.Controllers
                 }
             }
 
-        }
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginViewModel model)

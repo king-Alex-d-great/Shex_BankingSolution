@@ -23,7 +23,7 @@ namespace WebUI.domain.Services
 
         public void Add(CustomerViewModel model)
         {
-            var customer = new Customer
+            /*var customer = new Customer
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -36,7 +36,7 @@ namespace WebUI.domain.Services
             };
 
             _customerRepo.Add(customer);
-            _unitOfWork.Commit();
+            _unitOfWork.Commit();*/
 
         }
     }
