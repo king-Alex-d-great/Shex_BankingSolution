@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OnlineBanking.Domain.Entities
 {
-   public class AppDbContext : IdentityDbContext<IdentityUser>
+   public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext() { }
 
@@ -20,12 +20,15 @@ namespace OnlineBanking.Domain.Entities
             modelBuilder.Seed();
             base.OnModelCreating(modelBuilder);
         }
+
+
         
         public DbSet<User>  Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public  DbSet<AppRole> Roles { get; set; }
 
+            
 
     }
 }

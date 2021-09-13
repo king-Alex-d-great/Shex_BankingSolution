@@ -29,6 +29,8 @@ namespace OnlineBanking.Domain.Entities
 
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
+        public AccountType AccountType { get; set; }
+
         public string CreatedBy { get; set; }
 
         public string UpdatedBy { get; set; }
