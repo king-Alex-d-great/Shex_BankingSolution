@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Services;
+using OnlineBanking.Domain.Services;
 using WebUI.domain.Model;
 
 namespace WebUI.domain.Controllers
@@ -13,14 +14,14 @@ namespace WebUI.domain.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly IUserService _userService;
+        
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserService userService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
 
             _signInManager = signInManager;
             _userManager = userManager;
-            _userService = userService;
+           
         }
 
         public UserManager<User> UserManger { get; }
@@ -88,8 +89,8 @@ namespace WebUI.domain.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    var user = _userService.Get(model.Email);
-                    return View("HomePage", user);
+                   // var user = _userService.Get(model.Email);
+                    return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
             }
