@@ -5,12 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using OnlineBanking.Domain.Entities;
-﻿using System;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Services;
 using OnlineBanking.Domain.Services;
 using WebUI.domain.Model;
@@ -21,13 +15,13 @@ namespace WebUI.domain.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
-        private readonly SignInManager<User> _signManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signManager)
+        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _signManager = signManager;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -46,25 +40,9 @@ namespace WebUI.domain.Controllers
             {
                 var user = new User
                 {
+                    FullName = $"{model.FirstName} {model.LastName}",
                     Email = model.Email,
-                    Password = model.Password,
-                    UserName = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    IsActive = model.IsActive = true,                   
-                    Customer = new Customer { UserName = model.Email },
-                    Account = new Account
-                    {
-                        AccountNumber = (RandomNumberGenerator.GetInt32(1000, 9999) * RandomNumberGenerator.GetInt32(10000, 99999)).ToString(),
-                        Balance = model.AccountType == OnlineBanking.Domain.Enumerators.AccountType.Savings ? 5000 : 0,
-                        AccountType = model.AccountType,
-                        CreatedAt= DateTime.Now,
-                        IsActive = true,
-                        UpdatedAt = DateTime.Now,  
-                        CreatedBy= "king Alex",
-                        UpdatedBy = "Shola nejo"
-                    }
-
+                    UserName = model.Email
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -85,6 +63,7 @@ namespace WebUI.domain.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {

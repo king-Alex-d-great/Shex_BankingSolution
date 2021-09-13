@@ -12,8 +12,8 @@ namespace OnlineBanking.Domain.Repositories
 {
      public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
      {
-         private readonly AppDbContext _dbContext;
-        public Repository(AppDbContext dbContext)
+         private readonly DbContext _dbContext;
+        public Repository(DbContext dbContext)
         {
             _dbContext = dbContext;
         }

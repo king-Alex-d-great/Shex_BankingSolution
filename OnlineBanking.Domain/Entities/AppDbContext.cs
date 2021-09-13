@@ -26,14 +26,6 @@ namespace OnlineBanking.Domain.Entities
         public DbSet<Customer> Customers { get; set; }
         public  DbSet<AppRole> Roles { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
-
-        public  DbSet<User> Users { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Customer> Customers { get; set; }       
 
     }
 }

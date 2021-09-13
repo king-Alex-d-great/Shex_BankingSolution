@@ -255,12 +255,9 @@ namespace OnlineBanking.Domain.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-=======
->>>>>>> ShEX
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
@@ -273,7 +270,6 @@ namespace OnlineBanking.Domain.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-<<<<<<< HEAD
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
@@ -297,11 +293,6 @@ namespace OnlineBanking.Domain.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-=======
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
->>>>>>> ShEX
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -332,7 +323,6 @@ namespace OnlineBanking.Domain.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-<<<<<<< HEAD
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -345,36 +335,6 @@ namespace OnlineBanking.Domain.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-=======
-                    b.Property<int?>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("AccountId1")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConfirmPassword")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("AccountId1");
-
-                    b.HasIndex("CustomerId");
-
->>>>>>> ShEX
                     b.HasDiscriminator().HasValue("User");
                 });
 
@@ -429,7 +389,6 @@ namespace OnlineBanking.Domain.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("OnlineBanking.Domain.Entities.Customer", b =>
                 {
                     b.HasOne("OnlineBanking.Domain.Entities.Account", "Account")
@@ -439,21 +398,6 @@ namespace OnlineBanking.Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-=======
-            modelBuilder.Entity("OnlineBanking.Domain.Entities.User", b =>
-                {
-                    b.HasOne("OnlineBanking.Domain.Entities.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId1");
-
-                    b.HasOne("OnlineBanking.Domain.Entities.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Customer");
->>>>>>> ShEX
                 });
 #pragma warning restore 612, 618
         }
