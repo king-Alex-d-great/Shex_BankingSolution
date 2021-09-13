@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using OnlineBanking.Domain.Interfaces;
 
 namespace OnlineBanking.Domain.Entities
 {
-  public  class Customer : IEntity
+    class AppRole : IdentityRole, IEntity
     {
-        public int Id { get; set; }
-        public string UserName { get; set; }
+        
     }
 }

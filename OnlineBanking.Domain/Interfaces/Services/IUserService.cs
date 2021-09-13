@@ -5,9 +5,8 @@ namespace OnlineBanking.Domain.Interfaces.Services
 {
     public interface IUserService
     {
-        void Register(RegisterViewModel model);
-        int Update(UpdateViewModel model, int Id);
-        User Login(LoginViewModel model, out Account account);
+        public User Get(string email);        
+        int Update(UpdateViewModel model, int Id);        
         User Delete(int id, out int affectedRow);
         void Get(int id);
     }

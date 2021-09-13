@@ -7,9 +7,10 @@ using OnlineBanking.Domain.Interfaces.Repositories;
 
 namespace OnlineBanking.Domain.UnitOfWork
 {
-    public interface IUnitOfWork<Tentity> where Tentity : class
+   // public interface IUnitOfWork<Tentity> where Tentity : class
+    public interface IUnitOfWork 
     {        
-        IRepository<Tentity> _entity { get; }        
+      //  IRepository<Tentity> _entity { get; }        
         Task<int> CommitAsync();
         int Commit();
     }

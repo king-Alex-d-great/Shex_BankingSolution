@@ -1,63 +1,62 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
-using OnlineBanking.Domain.Entities;
-using OnlineBanking.Domain.Interfaces.Services;
-using OnlineBanking.Domain.Model;
-using OnlineBanking.Domain.Encryption;
-using OnlineBanking.Domain.UnitOfWork;
 using System.Text;
+using OnlineBanking.Domain.Encryption;using OnlineBanking.Domain.Interfaces.Services;
+
+using OnlineBanking.Domain.Entities;
+using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Model;
+using OnlineBanking.Domain.UnitOfWork;
 
 namespace OnlineBanking.Domain.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UnitOfWork<Account> _unitOfWork;
-        public AccountService(UnitOfWork<Account> unitOfWork)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAccountRepository _accountRepo;        
+        public AccountService(IUnitOfWork unitOfWork, IAccountRepository accountRepo)
         {
             _unitOfWork = unitOfWork;
+            _accountRepo = accountRepo;
         }
-        public void checkBalance(User user)
+        
+        /*public Account Login(LoginViewModel model)
         {
-            throw new NotImplementedException();
-        }
-        public Account Login(LoginViewModel model, out Account account)
-        {
-            bool isValidated = false;
             Console.ForegroundColor = ConsoleColor.White;
-
-            model.UsernameEmail = model.UsernameEmail.Trim().ToLower();
+            model.Email = model.Email.Trim().ToLower();
             model.Password = model.Password.Trim().ToLower();
-            isValidated = AuthenticateUser(model.UsernameEmail, model.Password, out Account account1);
-            // account = _unitOfWork.Accounts.Find(a => a.Id == user.AccountId).FirstOrDefault();
-            if (!isValidated)
-            {
-                account = null;
-                Console.WriteLine("Invalid Username or password\n");
-                return null;
-            }
-            account = _unitOfWork._entity.Find(a => a.Id == account1.Id).FirstOrDefault();
-            Console.WriteLine(" login Successful\n\n");
-            Console.WriteLine(account.Balance);
-            return account;
-        }
+            var authenticationResult = AuthenticateUser(model.Email, model.Password);
 
-        public Account Delete(int id, out int affectedRow)
+            if (!authenticationResult.isValidated)
+            {
+                Console.WriteLine("Invalid Username or password\n");
+                return authenticationResult.Item2;
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("login Successful\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(authenticationResult.account.Balance);
+            return authenticationResult.account;
+        }*/
+
+        public (int affectedRow, Account account) Delete(int id)
         {
-            affectedRow = 0;
+            int affectedRow = 0;
+            Account account = null;
             try
             {
-                var result = _unitOfWork._entity.Get(id);
-                _unitOfWork._entity.Delete(result);
+                account = _accountRepo.Get(id);
+                _accountRepo.Delete(account);
                 affectedRow = _unitOfWork.Commit();
                 Console.WriteLine($"Account : {id} deleted\n\n");
-                return result;
+                return (affectedRow, account);
             }
             catch (Exception error)
             {
                 Console.WriteLine(error.Message);
             }
-            return null;
+            return (affectedRow, account);
         }
 
         public Account Get(int id)
@@ -65,7 +64,7 @@ namespace OnlineBanking.Domain.Services
             Account account = null;
             try
             {
-                account = _unitOfWork._entity.Get(id);
+                account = _accountRepo.Get(id);
             }
             catch (Exception error)
             {
@@ -73,18 +72,19 @@ namespace OnlineBanking.Domain.Services
             }
             return account;
         }
+        
 
 
-        public Account Register(RegisterViewModel model)
+        /*public Account Register(RegisterViewModel model)
         {
             Account account = null;
-            /*try
-            {*/
-            var salt = PasswordHasher.GetSalt();
+            try
+            {
+                var salt = PasswordHasher.GetSalt();
 
                 if (!Validate(model))
                 {
-                    return null ;
+                    return null;
                 }
 
                 account = new Account
@@ -98,28 +98,30 @@ namespace OnlineBanking.Domain.Services
                     AccountType = model.AccountType,
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Shola nejo",
+                    UpdatedAt = DateTime.Now,
+                    UpdatedBy = "Shola nejo",
                     Customer = new Customer(),
                     Balance = model.AccountType == Enumerators.AccountType.Savings ? 5000 : 0,
                 };
-                _unitOfWork.Entity.Add(account);
+                _accountRepo.Add(account);
                 _unitOfWork.Commit();
                 Console.WriteLine("Success!\n");
-           
-            /*catch (Exception error)
+            }
+            catch (Exception error)
             {
                 Console.WriteLine(error.Message);
                 Console.WriteLine(error.InnerException);
-            }*/
+            }
             return account;
         }
+*/
 
-
-        public int Update(UpdateViewModel model, int Id)
+       /* public int Update(UpdateViewModel model, int Id)
         {
             int affectedRow = 0;
             try
             {
-                var account = _unitOfWork._entity.Get(Id);
+                var account = _accountRepo.Get(Id);
                 //var salt = user.Salt;
                 account.Email = model.Email ??= account.Email;
                 account.AccountType = model.AccountType ??= account.AccountType;
@@ -127,7 +129,7 @@ namespace OnlineBanking.Domain.Services
                 account.UpdatedBy = "King Alex";
                 // var currenthashedpassword = Hasher.hashPassword(Encoding.UTF8.GetBytes(model.CurrentPassword), Encoding.UTF8.GetBytes(salt));
 
-                /*if (currenthashedpassword == user.Password && !string.IsNullOrWhiteSpace(model.CurrentPassword))
+                *//*if (currenthashedpassword == user.Password && !string.IsNullOrWhiteSpace(model.CurrentPassword))
                 {
 
                     if (model.NewPassword == model.ConfirmNewPassword && !string.IsNullOrWhiteSpace(model.NewPassword))
@@ -138,7 +140,7 @@ namespace OnlineBanking.Domain.Services
                         return affectedRow;
                     }
                     Console.WriteLine("Confirm password field did not match newpassword field ");
-                }*/
+                }*//*
                 return affectedRow;
             }
             catch (Exception error)
@@ -150,20 +152,20 @@ namespace OnlineBanking.Domain.Services
 
         private bool Validate(RegisterViewModel model)
         {
-            var error = string.IsNullOrWhiteSpace(model.Email) ? ErrorMessage("Email", out int count) :
-            string.IsNullOrWhiteSpace(model.FirstName) ? ErrorMessage("FirstName", out count) :
-            string.IsNullOrWhiteSpace(model.LastName) ? ErrorMessage("LastName", out count) :
-            string.IsNullOrWhiteSpace(model.Password) ? ErrorMessage("Password", out count) : string.Empty;
+            (String error, int count) error = string.IsNullOrWhiteSpace(model.Email) ? ErrorMessage("Email") :
+            string.IsNullOrWhiteSpace(model.FirstName) ? ErrorMessage("FirstName") :
+            string.IsNullOrWhiteSpace(model.LastName) ? ErrorMessage("LastName") :
+            string.IsNullOrWhiteSpace(model.Password) ? ErrorMessage("Password") : (string.Empty, 2);
 
-            if (string.IsNullOrEmpty(error))
+            if (string.IsNullOrEmpty(error.error))
             {
                 return true;
             }
             return false;
         }
-        public static string ErrorMessage(string name, out int count)
+        public static (string err, int count) ErrorMessage(string name)
         {
-            count = 0;
+            var count = 0;
             while (true && count < 2)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -183,34 +185,48 @@ namespace OnlineBanking.Domain.Services
             if (count >= 2)
             {
                 Console.WriteLine("You've Exhausted your chances. ");
-                return string.Empty;
+                return (string.Empty, count);
             }
-            return "yoo";
+            return ("No error", count);
         }
 
-        public bool AuthenticateUser(string userNameEmail, string password, out Account account)
+        public (bool isValidated, Account account) AuthenticateUser(string userNameEmail, string password)
         {
-            account = null;
-            var isValidated = false;
-
-            account = _unitOfWork._entity.Find(a => a.Email == userNameEmail).FirstOrDefault();
-
+            var isValid = false;
+            var account = _accountRepo.Find(a => a.Email == userNameEmail).FirstOrDefault();
             if (account == null)
-                return false;
+                return (isValidated: isValid, account: account);
 
-            // var salt = user.Salt;
+            //var salt = user.Salt;
             // var saltedLoginPassword = Hasher.hashPassword(Encoding.UTF8.GetBytes(password), Encoding.UTF8.GetBytes(salt));
-
             // if (saltedLoginPassword == user.Password)
+
             if (password == account.ConfirmPassword)
             {
-                isValidated = true;
-                return isValidated;
+                isValid = true;
             }
             Console.WriteLine("Your username or password is Incorrect\nIf you are a new user , please click 1 to register\n");
-            return isValidated;
+            return (isValidated: isValid, account: account);
+        }
+*/
+        public void checkBalance(User user)
+        {
+            throw new NotImplementedException();
         }
 
+        public Account Register(RegisterViewModel model)
+        {
+            throw new NotImplementedException();
+        }
 
+        public int Update(UpdateViewModel model, int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Account Login(LoginViewModel model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

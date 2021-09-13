@@ -1,16 +1,17 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using OnlineBanking.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineBanking.Domain.Interfaces.Services;
 using OnlineBanking.Domain.Model;
-using OnlineBanking.Domain.Services;
-using OnlineBanking.Domain.UnitOfWork;
 
 namespace WebUI.domain.Controllers
 {
     public class HomeController : Controller
     {
-        static IAccountService AccountService = new AccountService(new UnitOfWork<Account>(new AppDbContext()));
+        private readonly IAccountService _accountService;
+
+        public HomeController(IAccountService accountService)
+        {
+            _accountService = accountService;
+        }
 
         public IActionResult Index()
         {
@@ -25,8 +26,8 @@ namespace WebUI.domain.Controllers
         public IActionResult SignUp(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
-             return View();
-            var account = AccountService.Register(model); 
+                return View();
+            var account = _accountService.Register(model);
             return View("HomePage", account);
         }
         public IActionResult LogOut()
@@ -40,12 +41,17 @@ namespace WebUI.domain.Controllers
         }
         [HttpPost]
         public IActionResult LogIn(LoginViewModel model)
-        {            
+        {
             if (!ModelState.IsValid)
+            {
+                System.Console.WriteLine("grrr");
                 return View();
-           /* //access db and use login details to get account and pass that into view*/
-            AccountService.Login(model, out Account LoginAccount);
-            return View("HomePage", LoginAccount);           
+            }
+
+            System.Console.WriteLine("brrr");
+            /* //access db and use login details to get account and pass that into view*/
+            var result = _accountService.Login(model);
+            return View("HomePage", result);
         }
         private IActionResult HomePage()
         {

@@ -11,6 +11,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OnlineBanking.Domain.Entities;
 using WebUI.domain.Middlewares;
+using OnlineBanking.Domain.UnitOfWork;
+using OnlineBanking.Domain.Interfaces.Services;
+using OnlineBanking.Domain.Services;
+using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Repositories;
 
 namespace WebUI.domain
 {
@@ -28,8 +33,13 @@ namespace WebUI.domain
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDBConnection(Configuration);
-            services.AddControllersWithViews(); 
+            services.AddControllersWithViews();
             
+            services.AddScoped<DbContext, AppDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAccountRepository, AccountRepository>();            
+            services.AddScoped<IAccountService, AccountService>(); 
+            //services.AddScoped<IUserService, UserService>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

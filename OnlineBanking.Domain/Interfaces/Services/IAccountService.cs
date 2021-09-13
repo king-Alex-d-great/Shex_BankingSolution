@@ -11,8 +11,8 @@ namespace OnlineBanking.Domain.Interfaces.Services
         void checkBalance(User user);
         Account Register(RegisterViewModel model);
         int Update(UpdateViewModel model, int Id);
-        Account Login(LoginViewModel model, out Account account);
-        Account Delete(int id, out int affectedRow);
+        Account Login(LoginViewModel model);
+        (int affectedRow, Account account) Delete(int id);
        
     }
 }

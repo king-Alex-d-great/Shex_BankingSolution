@@ -8,15 +8,15 @@ using OnlineBanking.Domain.Repositories;
 
 namespace OnlineBanking.Domain.UnitOfWork
 {
-    public class UnitOfWork<Tentity> : IUnitOfWork<Tentity> where Tentity : class
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;   
-        public IRepository<Tentity> _entity { get; set; }
+       // public IRepository<Tentity> _entity { get; set; }
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
         }        
-        public  IRepository<Tentity> Entity { get { return _entity ??= _entity = new Repository<Tentity>(_context); } }       
+       // public  IRepository<Tentity> Entity { get { return _entity ??= _entity = new Repository<Tentity>(_context); } }       
 
         public int Commit()
         {
