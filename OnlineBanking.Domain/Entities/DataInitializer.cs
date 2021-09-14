@@ -1,54 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OnlineBanking.Domain.Enumerators;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OnlineBanking.Domain.Entities
 {
-    internal static class DataInitializer
+    public static class DataInitializer
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            /*var accounts = new List<Account>
-            {*/
-            /*new Account
-            {
-                AccountNumber = "1234567890",
-                AccountType = Enumerators.AccountType.Savings,
-                Balance = 234588920,
-                FirstName = "King",
-                LastName = "Alex",
-                Password = "1234abcd",
-                ConfirmPassword = "124abcd",
-                Email = "alexking@domain.com",
-                *//*CreatedAt = DateTime.Now,
-                CreatedBy = "King Shola",*//*
-                IsActive = true,
-                UpdatedAt = DateTime.Now,
-                UpdatedBy = "King Shola",
-                Customer = new Customer{Id = 1}
-            },
-            new Account
-            {
-                AccountNumber = "1234567891",
-                AccountType = Enumerators.AccountType.Student,
-                Balance = 234588920,
-                FirstName = "King",
-                LastName = "TMajor",
-                Password = "1234abcd",
-                ConfirmPassword = "124abcd",
-                Email = "tmajorking@domain.com",
-                CreatedAt = DateTime.Now,
-                CreatedBy = "King",
-                IsActive = true,
-                UpdatedAt = DateTime.Now,
-                UpdatedBy = "King",
-                Customer = new Customer{Id = 2}
-            }
-        };
-        modelBuilder.Entity<Customer>().HasData(accounts);*/
-
-            /* }*/
+           
         }
+
+        public static async Task SeedRolesAsync(UserManager<User> userManager, RoleManager<AppRole> roleManager)
+        {
+            await roleManager.CreateAsync(new AppRole { Name = Roles.SuperAdmin.ToString(), CreatedAt = DateTime.Now, CreatedBy = "Shola Nejo" });
+            await roleManager.CreateAsync(new AppRole { Name = Roles.Admin.ToString(), CreatedAt = DateTime.Now, CreatedBy = "Shola Nejo" });
+            await roleManager.CreateAsync(new AppRole { Name = Roles.Customer.ToString(), CreatedAt = DateTime.Now, CreatedBy = "Shola Nejo" });
+        }
+
+        public static async Task SeedSuperAdminAsync(UserManager<User> userManager, RoleManager<AppRole> roleManager)
+        {
+            var defaultUser = new User
+            {
+                UserName = "sholanejo@gmail.com",
+                Email = "superadmin@gmail.com",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                FullName = "Shola Nejo",
+                PhoneNumber = "213-456-789",
+            };
+            if (userManager.Users.All(u => u.Id != defaultUser.Id))
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Shola-1234");
+                    //await userManager.AddToRoleAsync(defaultUser, Roles.Customer.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
+                    //await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
+                }
+            }
+        }
+
     }
 }

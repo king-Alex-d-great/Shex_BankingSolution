@@ -7,10 +7,11 @@ using OnlineBanking.Domain.Interfaces.Repositories;
 
 namespace OnlineBanking.Domain.Repositories
 {
-    public class AccountRepository : Repository<Account>, IAccountRepository
+    public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
+       
 
-        public AccountRepository(DbContext context ):base(context)
+        public CustomerRepository(DbContext context) : base(context)
         {
            
         }

@@ -1,14 +1,13 @@
 ﻿@using WebUI.domain.Model
-@model RegisterViewModel
-
+@model AddUserViewModel
 @{
-    ViewBag.Title = "User Registration";
-    }
+    ViewBag.Title = "Add User";
+}
 
 <section>
     <div>
         <h1>
-            Sign Up For a free ShEx Bank Account
+            Add User
         </h1>
     </div>
     <div>
@@ -32,30 +31,11 @@
                 <input asp-for="Email" class="form-control" placeholder="Email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
 
-            </div>           
-
-           
-            <p>Please Select account type</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" value="Savings" name="flexRadioDefault">
-                <label class="form-check-label" asp-for="AccountType">
-                    Savings
-                </label>
-                <span asp-validation-for="LastName" class="text-danger"></span>
-
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" value="Student" id="flexRadioDefault2" checked>
-                <label class="form-check-label" asp-for="AccountType">
-                    Student
-                </label>
-            </div>
-            <button type="submit" class="btn btn-primary text-center">SUBMIT INPUT</button>
+            </div> 
+            <button type="submit" class="btn btn-primary text-center">Add User</button>
 
         </form>
     </div>
 
-
 </section>
-
 

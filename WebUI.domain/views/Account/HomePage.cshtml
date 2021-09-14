@@ -1,0 +1,28 @@
+﻿@model (User, IList<string>)
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User>  userManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<body>
+
+    <h1>Name : @Model.Item1?.FullName</h1>
+    <h1>Email : @Model.Item1?.Email</h1>
+    <h1>Date Created : @Model.Item1?.CreatedAt</h1>
+    <h1>Creator : @Model.Item1?.CreatedBy</h1>
+   
+
+   
+
+    <section style=@(Model.Item2.Contains("SuperAdmin")? "display:block": "display:none")>
+        <h1>
+            <a class="btn btn-primary text-center"  asp-controller="Role" asp-action="Index">Manage Roles</a>
+            <a class="btn btn-primary text-center" asp-controller="Account" asp-action="ViewAll">Manage Users</a>
+        </h1>
+    </section>
+
+    <section style=@(Model.Item2.Contains("Customer")? "display:block": "display:none")>
+    </section>
+</body> 

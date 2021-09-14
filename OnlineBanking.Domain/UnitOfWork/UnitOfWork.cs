@@ -1,22 +1,23 @@
-﻿using System;
+﻿using OnlineBanking.Domain.Entities;
+using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OnlineBanking.Domain.Entities;
-using OnlineBanking.Domain.Interfaces.Repositories;
-using OnlineBanking.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineBanking.Domain.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext _context;   
-       // public IRepository<Tentity> _entity { get; set; }
-        public UnitOfWork(AppDbContext context)
+        private readonly DbContext _context;
+        
+        public UnitOfWork(DbContext context)
         {
             _context = context;
-        }        
-       // public  IRepository<Tentity> Entity { get { return _entity ??= _entity = new Repository<Tentity>(_context); } }       
+        }
+
 
         public int Commit()
         {
@@ -28,9 +29,5 @@ namespace OnlineBanking.Domain.UnitOfWork
             return await _context.SaveChangesAsync();
         }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
     }
 }

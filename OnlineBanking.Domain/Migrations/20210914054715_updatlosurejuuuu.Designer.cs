@@ -10,8 +10,8 @@ using OnlineBanking.Domain.Entities;
 namespace OnlineBanking.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210913120358_initial")]
-    partial class initial
+    [Migration("20210914054715_updatlosurejuuuu")]
+    partial class updatlosurejuuuu
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,6 +168,9 @@ namespace OnlineBanking.Domain.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("int");
 
+                    b.Property<int>("AccountType")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(38,2)");
 
@@ -204,29 +207,20 @@ namespace OnlineBanking.Domain.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AccountType")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -389,7 +383,13 @@ namespace OnlineBanking.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OnlineBanking.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Account");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

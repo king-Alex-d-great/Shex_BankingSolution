@@ -1,61 +1,46 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OnlineBanking.Domain.Interfaces.Services;
-using OnlineBanking.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using OnlineBanking.Domain.Entities;
+using OnlineBanking.Domain.Repositories;
+using OnlineBanking.Domain.UnitOfWork;
+using WebUI.domain.Interfaces.Services;
+using WebUI.domain.Models;
 
 namespace WebUI.domain.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IAccountService _accountService;
+        private readonly ICustomerService _customerService;
 
-        public HomeController(IAccountService accountService)
+        public HomeController(ICustomerService customerService)
         {
-            _accountService = accountService;
+            _customerService = customerService;
         }
+
+
+        //private readonly IUnitOfWork unitOfWork;
+
+        //public HomeController(IUnitOfWork _unitOfWork)
+        //{
+        //    unitOfWork = _unitOfWork;
+        //}
 
         public IActionResult Index()
         {
             return View();
         }
-        [HttpGet]
-        public IActionResult SignUp()
-        {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult SignUp(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return View();
-            var account = _accountService.Register(model);
-            return View("HomePage", account);
-        }
-        public IActionResult LogOut()
-        {
-            return View("Index");
-        }
-        [HttpGet]
-        public IActionResult LogIn()
-        {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult LogIn(LoginViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                System.Console.WriteLine("grrr");
-                return View();
-            }
 
-            System.Console.WriteLine("brrr");
-            /* //access db and use login details to get account and pass that into view*/
-            var result = _accountService.Login(model);
-            return View("HomePage", result);
-        }
-        private IActionResult HomePage()
+        public IActionResult Register()
         {
             return View();
         }
+
+       
+        
+        
+
     }
 }

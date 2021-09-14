@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace OnlineBanking.Domain.UnitOfWork
 {
-   // public interface IUnitOfWork<Tentity> where Tentity : class
-    public interface IUnitOfWork 
-    {        
-      //  IRepository<Tentity> _entity { get; }        
+    public interface IUnitOfWork
+    {
         Task<int> CommitAsync();
         int Commit();
     }

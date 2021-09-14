@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace WebUI.domain.Middlewares
 {
@@ -19,6 +19,7 @@ namespace WebUI.domain.Middlewares
 
             services.AddIdentity<User, AppRole>(options =>
             {
+                options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = false; //defaults to false
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
