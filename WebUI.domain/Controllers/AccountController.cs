@@ -9,6 +9,7 @@ using OnlineBanking.Domain.Interfaces.Services;
 using OnlineBanking.Domain.Services;
 using WebUI.domain.Model;
 using OnlineBanking.Domain.Enumerators;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebUI.domain.Controllers
 {
@@ -18,6 +19,44 @@ namespace WebUI.domain.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(User user)
+        {
+            if(user != null)
+            {
+                await _userManager.CreateAsync(user);
+            }
+            return RedirectToAction();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userName)
+        {
+            if(userName != null)
+            {
+                await _userManager.DeleteAsync(new User { UserName = userName });
+            }
+            return RedirectToAction();
+            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(User user)
+        {
+            if(user != null)
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            return RedirectToAction();
+        }
+
+        public async Task <IActionResult> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
+        }
+
 
         public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager)
         {
