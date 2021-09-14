@@ -35,10 +35,10 @@
                     @**@@*<a class="btn btn-primary" asp-controller="Account" asp-action="Update" asp-route-userId="@user.UserId">Manage User</a>*@
 
                     <div class="dropdown">
-                        <button class="dropbtn">Manage User</button>
+                        <button class="dropbtn">Manage Role</button>
                         <div class="dropdown-content">
-                            <a  asp-controller="Role" asp-action="Update">Update</a>                           
-                            <a  asp-controller="Role" asp-action="Delete">Delete</a>                            
+                            <a  asp-controller="Role" asp-action="UpdateUser">Update</a>                           
+                            <a  asp-controller="Role" asp-action="DeleteUser">Delete</a>                            
                         </div>
                     </div>
                 </td>
