@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
+using OnlineBanking.Domain.Interfaces.Repositories;
 
 namespace WebUI.domain.Controllers
 {
@@ -19,19 +20,31 @@ namespace WebUI.domain.Controllers
             _roleManager = roleManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task <IActionResult> Index()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            return View("Index", roles);
+            return View(roles);
         }
-        [HttpPost]
-        public async Task<IActionResult> AddRole(string RoleName)
+        public async Task <IActionResult> AddRole(string RoleName)
         {
-            if (!string.IsNullOrEmpty(RoleName))
+            if(RoleName != null)
             {
-                await _roleManager.CreateAsync(new AppRole { Name = RoleName.Trim(), CreatedAt= DateTime.Now, CreatedBy="Shola Nejo" });
+                await _roleManager.CreateAsync(new AppRole { Name = RoleName });
             }
-            return RedirectToAction("Index", "Role");
+            return RedirectToAction("AddRole");
         }
+        public async Task <IActionResult> DeleteRole(string RoleName)
+        {
+                if (RoleName != null)
+                {
+                    await _roleManager.DeleteAsync(new AppRole { Name = RoleName });
+                }
+            return RedirectToAction("RemoveRole");
+        }
+
+        /*public Task<IActionResult> AddRole(string RoleName)
+        {
+            if (!ModelState.IsValid)
+        }*/
     }
 }

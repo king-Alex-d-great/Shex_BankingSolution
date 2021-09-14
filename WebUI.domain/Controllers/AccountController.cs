@@ -13,6 +13,7 @@ using OnlineBanking.Domain.Services;
 using OnlineBanking.Domain.UnitOfWork;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
+using OnlineBanking.Domain.Enumerators;
 
 namespace WebUI.domain.Controllers
 {
@@ -22,9 +23,8 @@ namespace WebUI.domain.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ICustomerService _customerService;
-       
-        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager, ICustomerService customerService)
+
+        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;

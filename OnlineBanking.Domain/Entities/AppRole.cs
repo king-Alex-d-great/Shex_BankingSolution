@@ -8,7 +8,6 @@ namespace OnlineBanking.Domain.Entities
 {
    public class AppRole: IdentityRole, IEntity
     {
-        
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string CreatedBy { get; set; }
