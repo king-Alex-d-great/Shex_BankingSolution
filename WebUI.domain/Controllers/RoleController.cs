@@ -41,10 +41,14 @@ namespace WebUI.domain.Controllers
                 }
             return RedirectToAction("RemoveRole");
         }
-
-        /*public Task<IActionResult> AddRole(string RoleName)
+        public async Task<IActionResult> UpdateRole(string RoleName)
         {
-            if (!ModelState.IsValid)
-        }*/
+            if (RoleName != null)
+            {
+                await _roleManager.UpdateAsync(new AppRole { Name = RoleName });
+            }
+            return RedirectToAction("UpdateRole");
+        }
+
     }
 }

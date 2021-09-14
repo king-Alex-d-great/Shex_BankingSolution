@@ -23,8 +23,9 @@ namespace WebUI.domain.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ICustomerService _customerService;
 
-        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager, ICustomerService customerService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -182,6 +183,27 @@ namespace WebUI.domain.Controllers
         private async Task<List<string>> GetUserRoles(User user)
         {
             return new List<string>(await _userManager.GetRolesAsync(user));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userName)
+        {
+            if (userName != null)
+            {
+                await _userManager.DeleteAsync(new User { UserName = userName });
+            }
+            return RedirectToAction();
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(User user)
+        {
+            if (user != null)
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            return RedirectToAction();
         }
 
     }
