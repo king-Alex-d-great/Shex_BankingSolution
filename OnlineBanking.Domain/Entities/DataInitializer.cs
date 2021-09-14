@@ -18,9 +18,9 @@ namespace OnlineBanking.Domain.Entities
 
         public static async Task SeedRolesAsync(UserManager<User> userManager, RoleManager<AppRole> roleManager)
         {
-            await roleManager.CreateAsync(new AppRole { Name = Roles.SuperAdmin.ToString() });
-            await roleManager.CreateAsync(new AppRole { Name = Roles.Admin.ToString() });
-            await roleManager.CreateAsync(new AppRole { Name = Roles.Customer.ToString() });
+            await roleManager.CreateAsync(new AppRole { Name = Roles.SuperAdmin.ToString(), CreatedAt = DateTime.Now, CreatedBy = "Shola Nejo" });
+            await roleManager.CreateAsync(new AppRole { Name = Roles.Admin.ToString(), CreatedAt = DateTime.Now, CreatedBy = "Shola Nejo" });
+            await roleManager.CreateAsync(new AppRole { Name = Roles.Customer.ToString(), CreatedAt = DateTime.Now, CreatedBy = "Shola Nejo" });
         }
 
         public static async Task SeedSuperAdminAsync(UserManager<User> userManager, RoleManager<AppRole> roleManager)

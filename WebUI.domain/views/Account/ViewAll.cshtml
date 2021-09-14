@@ -1,0 +1,43 @@
+﻿@using WebUI.domain.Model
+@model List<DisplayAllViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Users</h1>
+<div>
+    <a class="btn btn-primary" asp-controller="Account" asp-action="AddUser">Add User</a>
+    <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollCustomer">Add Customer</a>
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>@string.Join(" , ", user.Roles.ToList())</td>
+                <td>
+                    @*//should hold a dropdown list -- get, delete, update*@                    
+                    <div class="dropdown">
+                        <button class="dropbtn">Manage User</button>
+                        <div class="dropdown-content">
+                            <a asp-controller="Account" asp-action="Update">Update </a>
+                            <a asp-controller="Account" asp-action="Delete">Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

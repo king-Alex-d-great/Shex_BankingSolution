@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 
 namespace WebUI.domain.Controllers
@@ -18,9 +19,19 @@ namespace WebUI.domain.Controllers
             _roleManager = roleManager;
         }
 
-        /*public Task<IActionResult> AddRole(string RoleName)
+        public async Task<IActionResult> Index()
         {
-            if (!ModelState.IsValid)
-        }*/
+            var roles = await _roleManager.Roles.ToListAsync();
+            return View("Index", roles);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddRole(string RoleName)
+        {
+            if (!string.IsNullOrEmpty(RoleName))
+            {
+                await _roleManager.CreateAsync(new AppRole { Name = RoleName.Trim(), CreatedAt= DateTime.Now, CreatedBy="Shola Nejo" });
+            }
+            return RedirectToAction("Index", "Role");
+        }
     }
 }

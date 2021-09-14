@@ -16,6 +16,8 @@ using OnlineBanking.Domain.Interfaces.Repositories;
 using OnlineBanking.Domain.Repositories;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Services;
+using OnlineBanking.Domain.Interfaces.Services;
+using OnlineBanking.Domain.Services;
 
 namespace WebUI.domain
 {
@@ -38,7 +40,7 @@ namespace WebUI.domain
             services.AddScoped<DbContext, AppDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ICustomerService, CustomerService>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -19,6 +19,7 @@ namespace WebUI.domain.Middlewares
 
             services.AddIdentity<User, AppRole>(options =>
             {
+                options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = false; //defaults to false
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;

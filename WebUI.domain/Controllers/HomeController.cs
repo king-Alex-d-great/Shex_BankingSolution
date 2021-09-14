@@ -38,27 +38,9 @@ namespace WebUI.domain.Controllers
             return View();
         }
 
-        [HttpPost]
+       
         
-        public IActionResult Register(CustomerViewModel customerModel)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View();
-                }
-               
-                _customerService.Add(customerModel);
-                return RedirectToAction("Index");
-                               
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-                return View();
-            }
-        }
+        
 
     }
 }
