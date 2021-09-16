@@ -49,16 +49,18 @@ namespace WebUI.domain.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateRole(string RoleName)
+        public async Task<IActionResult> UpdateRole(EditRoleViewModel model)
         {
-            if(RoleName != null)
+
+            if(model.RoleName != null)
             {
-                var role = await _roleManager.FindByNameAsync(RoleName);
-                var newName = new AppRole
+                var role = await _roleManager.FindByNameAsync(model.RoleName);
+                model.RoleName = model.NewRoleName;
+                /*var newName = new AppRole
                 {
                     Name = role.Name
-                };
-                await _roleManager.UpdateAsync(newName);
+                };*/
+                await _roleManager.UpdateAsync(role);
             }
             return RedirectToAction("Index");
         }

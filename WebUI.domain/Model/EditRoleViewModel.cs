@@ -11,5 +11,6 @@ namespace OnlineBanking.Domain.Model
         [Display(Name = "Role name")]
         [Required]
         public string RoleName { get; set; }
+        public string NewRoleName { get; set; }
     }
 }
