@@ -10,8 +10,8 @@ using OnlineBanking.Domain.Entities;
 namespace OnlineBanking.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210914054715_updatlosurejuuuu")]
-    partial class updatlosurejuuuu
+    [Migration("20210916140006_...")]
+    partial class _
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,17 +180,11 @@ namespace OnlineBanking.Domain.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -210,8 +204,20 @@ namespace OnlineBanking.Domain.Migrations
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
