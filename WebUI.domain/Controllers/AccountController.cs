@@ -17,6 +17,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
+using WebUI.domain.Middlewares;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -98,11 +99,12 @@ namespace WebUI.domain.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(model.Email);
-                    
-                    return View("HomePage", user);
+
+                    return RedirectToAction("HomePage");
                 }
-                ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
+              
             }
+            ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
             return View(model);
         }
 
@@ -111,18 +113,16 @@ namespace WebUI.domain.Controllers
         {
             return View(new AddUserViewModel());
         }
+
+
+        [HttpPost]
         public async Task<IActionResult> EnrollUser(AddUserViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-            var result = await addUser(model);
+            if (!ModelState.IsValid) return View();
+            var result = await AddUser(model);
 
-            if (result.Item1.Succeeded)
-            {
-                return RedirectToAction("ViewAll");
-            }
+            if (result.Item1.Succeeded) return RedirectToAction("ViewAll");
+            
             ModelState.AddModelError(String.Empty, "Operation failed, try again!");
             return View();
         }
@@ -145,7 +145,7 @@ namespace WebUI.domain.Controllers
             {
                 return View();
             }
-            var result = await addUser(model.addModel);
+            var result = await AddUser(model.addModel);
 
             if (!result.Item1.Succeeded)
             {
@@ -212,9 +212,12 @@ namespace WebUI.domain.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("index", "Home");
         }
+
+
         [Authorize]
-        public IActionResult HomePage(User model)
+        public  async Task<IActionResult> HomePage()
         {
+            var model = await _userManager.FindByIdAsync(User.GetUserId());
             return View(model);
         }
         public async Task<IActionResult> ViewAll()
@@ -247,7 +250,7 @@ namespace WebUI.domain.Controllers
             }
             return RedirectToAction();
         }
-        public async Task<(IdentityResult, User)> addUser(AddUserViewModel model)
+        public async Task<(IdentityResult, User)> AddUser(AddUserViewModel model)
         {
             var user = new User
             {
