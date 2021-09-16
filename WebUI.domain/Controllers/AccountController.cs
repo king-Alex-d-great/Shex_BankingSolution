@@ -169,31 +169,34 @@ namespace WebUI.domain.Controllers
                 return View();
             }
 
-            var user = new User
-            {
-                FullName = $"{model.FirstName} {model.LastName}",
-                Email = model.Email,
-                UserName = model.Email
-            };
-           //ar randPassword = new Guid().ToString("N").Substring(0, 8);
-
-            var result = await _userManager.CreateAsync(user, "Alex-1234");
+            var (result, user) = await AddUserAsync(new IdentityViewModel
+                {Email = model.Email, FullName = $"{model.FirstName} {model.LastName}"});
+            
             if (result.Succeeded)
             {
-                _customerService.Add(model, user, new ClaimsViewModel { Username = model.Email });
+                model.ReadOnlyCustomerProps = new ReadOnlyCustomerProps
+                {
+                    UserId = user.Id,
+                    CreatedBy = User.GetUserName(),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+
+                };
+
+                _customerService.Add(model);
 
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
-                //Send Mail To User With Credentials
-                var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
-                var client = new SendGridClient(apiKey);
-                var from = new EmailAddress("hello@baysuit.com", "Example User");
-                var subject = "Sending with SendGrid is Fun";
-                var to = new EmailAddress("ogubuikealex@gmail.com", "Example User");
-                var plainTextContent = "and easy to do anywhere, even with C#";
-                var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);
+                // //Send Mail To User With Credentials
+                // var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                // var client = new SendGridClient(apiKey);
+                // var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
+                // var subject = "Sending with SendGrid is Fun";
+                // var to = model.Email;
+                // var plainTextContent = "and easy to do anywhere, even with C#";
+                // var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+                // var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                // var response = await client.SendEmailAsync(msg);
 
                 return RedirectToAction("ViewAll");
 
@@ -260,6 +263,22 @@ namespace WebUI.domain.Controllers
             };
            // var defaultPassword = new Guid().ToString("N").Substring(0, 8);
             var result = await _userManager.CreateAsync(user, "Alex-1234");
+            return (result, user);
+        }
+
+
+        private async Task<(IdentityResult result, User user)> AddUserAsync(IdentityViewModel model)
+        {
+
+            var user = new User
+            {
+                FullName = model.FullName,
+                Email = model.Email,
+                UserName = model.Email
+            };
+            var randPassword = "Alex-1234";
+
+            var result = await _userManager.CreateAsync(user, randPassword);
             return (result, user);
         }
 

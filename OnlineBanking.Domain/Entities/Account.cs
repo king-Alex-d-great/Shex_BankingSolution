@@ -14,7 +14,6 @@ namespace OnlineBanking.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public string UserId { get; set; }        
 
         [MinLength(10)]
         [MaxLength(10)]

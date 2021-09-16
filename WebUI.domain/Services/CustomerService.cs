@@ -27,19 +27,19 @@ namespace WebUI.domain.Services
             int? result = _unitOfWork.Commit();
             return result;
         }
-        public int Add(EnrollCustomerViewModel enrollModel, User user, ClaimsViewModel claimsModel)
+        public int Add(EnrollCustomerViewModel enrollModel)
         {
             var customer = new Customer
             {
-                UserId = user.Id,
-                Birthday = enrollModel.Birthday,
+                UserId = enrollModel.ReadOnlyCustomerProps.UserId,
+                Birthday = enrollModel.Birthday.Value,
                 Gender = enrollModel.Gender,
                 Account = new Account
                 {
 
                     AccountType = enrollModel.AccountType,
                     AccountNumber = RandomNumberGenerator.GetInt32(9998, 9999) * RandomNumberGenerator.GetInt32(99998, 99999),
-                    CreatedBy = claimsModel.Username,
+                    CreatedBy = enrollModel.ReadOnlyCustomerProps.CreatedBy,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     Balance = enrollModel.AccountType != AccountType.Savings ? 0 : 5000
@@ -52,7 +52,6 @@ namespace WebUI.domain.Services
 
         }
 
-       
 
         public void Add(CustomerViewModel model)
         {

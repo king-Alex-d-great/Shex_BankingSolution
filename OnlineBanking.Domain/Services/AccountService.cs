@@ -63,7 +63,7 @@ namespace OnlineBanking.Domain.Services
            Account user = null;
             try
             {
-                user = _accountRepo.Find(a => (a.UserId).ToString() == Id).FirstOrDefault();
+                user = new Account();
             }
             catch (Exception error)
             {
