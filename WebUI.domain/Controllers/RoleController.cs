@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
-using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Model;
+using System.Threading.Tasks;
 
 namespace WebUI.domain.Controllers
 {
@@ -20,35 +17,74 @@ namespace WebUI.domain.Controllers
             _roleManager = roleManager;
         }
 
-        public async Task <IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var roles = await _roleManager.Roles.ToListAsync();
             return View(roles);
         }
-        public async Task <IActionResult> AddRole(string RoleName)
+        public async Task<IActionResult> AddRole(string RoleName)
         {
-            if(RoleName != null)
+            if (ModelState.IsValid)
             {
                 await _roleManager.CreateAsync(new AppRole { Name = RoleName });
             }
             return RedirectToAction("Index");
         }
-        public async Task <IActionResult> DeleteRole(string RoleName)
-        {
-                if (RoleName != null)
-                {
-                    await _roleManager.DeleteAsync(new AppRole { Name = RoleName });
-                }
-                return RedirectToAction("DeleteRole");
-        }
-        public async Task<IActionResult> UpdateRole(string RoleName)
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(string RoleName)
         {
             if (RoleName != null)
             {
-                await _roleManager.UpdateAsync(new AppRole { Name = RoleName });
+                var role = await _roleManager.FindByNameAsync(RoleName);
+                await _roleManager.DeleteAsync(role);
             }
-            return RedirectToAction("UpdateRole");
+            return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UpdateRole(string Id)
+        {
+            var role = await _roleManager.FindByIdAsync(Id);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {Id} cannot be found";
+
+            }
+            var model = new EditRoleViewModel
+            {
+                Id = role.Id,
+                RoleName = role.Name
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateRole(EditRoleViewModel model)
+        {
+            var role = await _roleManager.FindByIdAsync(model.Id);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {model.Id} cannot be found";
+
+            }
+            else
+            {
+                role.Name = model.RoleName;
+                var result = await _roleManager.UpdateAsync(role);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return RedirectToAction("Index");
+
+
+        }
     }
 }
+

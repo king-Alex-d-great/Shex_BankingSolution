@@ -1,4 +1,5 @@
-﻿@model List<AppRole>
+﻿@using WebUI.domain.Controllers;
+@model List<AppRole>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,6 +14,7 @@
         </span>
     </div>
 </form>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -37,8 +39,8 @@
                     <div class="dropdown">
                         <button class="dropbtn">Manage Role</button>
                         <div class="dropdown-content">
-                            <a  asp-controller="Role" asp-action="UpdateUser">Update</a>                           
-                            <a  asp-controller="Role" asp-action="DeleteUser">Delete</a>                            
+                            <a  asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Id">Update</a>
+                            @*<a  asp-controller="Role" asp-action="DeleteRole">Delete</a> *@                           
                         </div>
                     </div>
                 </td>
@@ -46,3 +48,13 @@
         }
     </tbody>
 </table>
+
+<form method="post" asp-action="DeleteRole" asp-controller="Role">
+    <div class="input-group">
+        <p>Please Enter The Name of the Role You Want to Delete</p>
+        <input name="RoleName" type="text" class="form-control w-25">
+        <span class="input-group-btn">
+            <button class="btn btn-info">Delete Role</button>
+        </span>
+    </div>
+</form>

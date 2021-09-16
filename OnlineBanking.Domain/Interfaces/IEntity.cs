@@ -10,5 +10,5 @@ namespace OnlineBanking.Domain.Interfaces
         public DateTime? UpdatedAt => DateTime.Now;
         public string CreatedBy => "King Aleeex";
         public string UpdatedBy => "Shola nejo";
-    }
+     }
 }

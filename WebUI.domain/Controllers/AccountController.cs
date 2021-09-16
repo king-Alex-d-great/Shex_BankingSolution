@@ -13,7 +13,12 @@ using OnlineBanking.Domain.Services;
 using OnlineBanking.Domain.UnitOfWork;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
-using OnlineBanking.Domain.Enumerators;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+
+/*using OnlineBanking.Domain.Enumerators;*/
 
 namespace WebUI.domain.Controllers
 {
@@ -57,9 +62,9 @@ namespace WebUI.domain.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
 
-                    var roles = await _userManager.GetRolesAsync(user);
+                   // var roles = await _userManager.GetRolesAsync(user);
                     // var user = _userService.Get(model.Email);
-                    return View("HomePage", (user, roles));                   
+                    return View("HomePage", user);                   
                 }
                 foreach (var error in result.Errors)
                 {
@@ -69,17 +74,95 @@ namespace WebUI.domain.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult LogIn()
+        /*public IActionResult LogIn()
         {
             return View();
         }
+*/
+        public async Task<IActionResult> LogIn(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> LogIn(LoginViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByNameAsync(model.Email);
+                    
+                    return View("HomePage", user);
+                }
+                ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult EnrollUser()
+        {
+            return View(new AddUserViewModel());
+        }
+        public async Task<IActionResult> EnrollUser(AddUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var result = await addUser(model);
+
+            if (result.Item1.Succeeded)
+            {
+                return RedirectToAction("ViewAll");
+            }
+            ModelState.AddModelError(String.Empty, "Operation failed, try again!");
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult EnrollCustomer()
         {
             return View(new EnrollCustomerViewModel());
         }
+        /*public IActionResult EnrollCustomer()
+        {
+            var model = (new EnrollCustomerViewModel { }, new AddUserViewModel { });
+            return View(model);
+        }*/
 
-        public async Task<IActionResult> AddUser(AddUserViewModel model)
+
+        /*public async Task<IActionResult> EnrollCustomer([FromBody](EnrollCustomerViewModel enrollModel,AddUserViewModel addModel) model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var result = await addUser(model.addModel);
+
+            if (!result.Item1.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "An Error Occurred, Customer not created!!");
+                return View();
+            }
+             var AffectedRows =  _customerService.Add(model.enrollModel, result.Item2, new ClaimsViewModel { Username = User.Identity.Name, UserId = result.Item2.Id});
+
+            if (AffectedRows < 1)
+            {
+                ModelState.AddModelError(string.Empty, "A Database error occured!!");
+                return View();
+            }
+            return RedirectToAction("ViewAll");
+        } */
+        [HttpPost]
+        public async Task<IActionResult> EnrollCustomer(EnrollCustomerViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -92,93 +175,52 @@ namespace WebUI.domain.Controllers
                 Email = model.Email,
                 UserName = model.Email
             };
-            var result = await _userManager.CreateAsync(user, "Alex-1234");
+           //ar randPassword = new Guid().ToString("N").Substring(0, 8);
 
+            var result = await _userManager.CreateAsync(user, "Alex-1234");
             if (result.Succeeded)
             {
-                return View("ViewAll");
+                _customerService.Add(model, user, new ClaimsViewModel { Username = model.Email });
+
+                TempData["EnrollSuccess"] = "Enrollment Was Successful!";
+
+                //Send Mail To User With Credentials
+                var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                var client = new SendGridClient(apiKey);
+                var from = new EmailAddress("hello@baysuit.com", "Example User");
+                var subject = "Sending with SendGrid is Fun";
+                var to = new EmailAddress("ogubuikealex@gmail.com", "Example User");
+                var plainTextContent = "and easy to do anywhere, even with C#";
+                var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                var response = await client.SendEmailAsync(msg);
+
+                return RedirectToAction("ViewAll");
+
             }
-            ModelState.AddModelError(String.Empty, "Operation failed, try again!");
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
             return View();
         }
-        public async Task<IActionResult> EnrollCustomer(EnrollCustomerViewModel model, User user)
-        {
 
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
 
-            var customer = new Customer
-            {
-                UserId = user.Id,
-                Birthday = model.Birthday,
-                Gender = model.Gender,
-                Account = new Account
-                {
-                    AccountType = model.AccountType,
-                    UserId = user.Id,
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = "Shola Nejo",
-                    AccountNumber = RandomNumberGenerator.GetInt32(9998, 9999) * RandomNumberGenerator.GetInt32(99998, 99999),
-                    UpdatedAt = DateTime.Now,
-                }
-            };
-            var result = _customerService.Add(customer);
-            if(result == null)
-            {
-                return View();
-            }
-            return View("ViewAll");
-        }
-       
-
-        [HttpPost]
-        public async Task<IActionResult> LogIn(LoginViewModel model)
-        {
-
-            if (ModelState.IsValid)
-            {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
-                if (result.Succeeded)
-                {
-                    var user = await _userManager.FindByNameAsync(model.Email);
-                    var roles = await _userManager.GetRolesAsync(user);
-                    await _userManager.GetUsersInRoleAsync("SuperAdmin");                    
-                    return View("HomePage", (user, roles));
-                }
-                ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
-            }
-            return View(model);
-        }
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("index", "Home");
         }
-
-        public IActionResult HomePage((User, IList<string>) model)
+        [Authorize]
+        public IActionResult HomePage(User model)
         {
             return View(model);
         }
         public async Task<IActionResult> ViewAll()
         {
-            var users = await _userManager.Users.ToListAsync();
-            var viewAllViewModel = new List<DisplayAllViewModel>();
-            foreach (User user in users)
-            {
-                var thisViewModel = new DisplayAllViewModel
-                {
-                    Email = user.Email,
-                    UserId = user.Id,
-                    FullName = user.FullName,
-                    UserName = user.UserName,
-                    Roles = await GetUserRoles(user)
-                };
-                viewAllViewModel.Add(thisViewModel);
-            }
-            return View(viewAllViewModel);
+            
+            return View(await _userManager.Users.ToListAsync());
         }
         private async Task<List<string>> GetUserRoles(User user)
         {
@@ -204,6 +246,18 @@ namespace WebUI.domain.Controllers
                 await _userManager.UpdateAsync(user);
             }
             return RedirectToAction();
+        }
+        public async Task<(IdentityResult, User)> addUser(AddUserViewModel model)
+        {
+            var user = new User
+            {
+                FullName = $"{model.FirstName} {model.LastName}",
+                Email = model.Email,
+                UserName = model.Email
+            };
+           // var defaultPassword = new Guid().ToString("N").Substring(0, 8);
+            var result = await _userManager.CreateAsync(user, "Alex-1234");
+            return (result, user);
         }
 
     }

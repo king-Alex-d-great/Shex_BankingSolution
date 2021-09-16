@@ -28,7 +28,7 @@ namespace OnlineBanking.Domain.Entities
             var defaultUser = new User
             {
                 UserName = "sholanejo@gmail.com",
-                Email = "superadmin@gmail.com",
+                Email = "sholanejo@gmail.com",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 FullName = "Shola Nejo",
@@ -39,10 +39,8 @@ namespace OnlineBanking.Domain.Entities
                 var user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "Shola-1234");
-                    //await userManager.AddToRoleAsync(defaultUser, Roles.Customer.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
-                    //await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
+                    await userManager.CreateAsync(defaultUser, "Shola-1234");                    
+                    await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());                    //await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
                 }
             }
         }

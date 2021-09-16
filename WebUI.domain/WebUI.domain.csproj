@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="views\Shared\_LoginPartial.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="microsoft.entityframeworkcore.design" Version="5.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Role\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
@@ -34,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="views\Shared\_LoginPartial.cshtml" />
-  </ItemGroup> 
+    <None Include="Views\Shared\_LoginPartial.cshtml" />
+  </ItemGroup>
 
 </Project>
