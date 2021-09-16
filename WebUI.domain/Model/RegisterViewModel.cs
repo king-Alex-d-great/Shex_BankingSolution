@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
