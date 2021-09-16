@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using OnlineBanking.Domain.Encryption;using OnlineBanking.Domain.Interfaces.Services;
+using OnlineBanking.Domain.Interfaces.Services;
 
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Repositories;

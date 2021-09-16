@@ -6,7 +6,7 @@ namespace OnlineBanking.Domain.Enumerators
 {
     public enum Gender
     {
-        Male,
+        Male = 1,
         Female,
         PreferNotToSay,
     }
