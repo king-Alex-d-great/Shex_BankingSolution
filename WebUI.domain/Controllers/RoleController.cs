@@ -31,7 +31,7 @@ namespace WebUI.domain.Controllers
             {
                 await _roleManager.CreateAsync(new AppRole { Name = RoleName });
             }
-            return RedirectToAction("AddRole");
+            return RedirectToAction("Index");
         }
         public async Task <IActionResult> DeleteRole(string RoleName)
         {

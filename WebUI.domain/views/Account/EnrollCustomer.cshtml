@@ -1,6 +1,7 @@
 ﻿@using WebUI.domain.Model
 @using OnlineBanking.Domain.Enumerators
-@model EnrollCustomerViewModel
+@*@model (EnrollCustomerViewModel , AddUserViewModel)*@
+@model EnrollCustomerViewModel 
 @{
     ViewBag.Title = "Add User";
 }
@@ -8,7 +9,7 @@
 <section>
     <div>
         <h1>
-            Add User
+            Add Customer
         </h1>
     </div>
     <div>
@@ -16,36 +17,148 @@
             <div asp-validation-summary="ModelOnly"></div>
 
             <div class="form-group col-xl-4">
+                <label asp-for="FirstName">First Name:</label>
+                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
 
-                <label asp-for="Birthday">First Name:</label>
+            <div class="form-group col-xl-4">
+                <label asp-for="LastName">Last Name:</label>
+                <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-xl-4">
+                <label asp-for="Email">Email:</label>
+                <input asp-for="Email" class="form-control" placeholder="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+            </div>
+
+            <div class="form-group col-xl-4">
+                <label asp-for="Birthday">Birthday:</label>
                 <input type="date" asp-for="Birthday" class="form-control" placeholder="Birthdate" />
                 <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
 
             <div class="form-group col-xl-4">
-                <div class="editor-field">
-                    @Html.DropDownList("Gender", new List<SelectListItem>{
-                    new SelectListItem{ Text="Male", Value=Gender.Male.ToString()},
-                    new SelectListItem{ Text="Female", Value=Gender.Female.ToString()},
-                    new SelectListItem{ Text="Prefer Not to say", Value=Gender.PreferNotToSay.ToString()}
-                    }, "--- Select Gender---"
-                    )
-                </div>
+                <label asp-for="Gender">Choose a gender:</label>
+                <select asp-for="Gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="PreferNotToSay">Prefer not to say</option>
+                </select>
             </div>
-            
-            <div class="form-group col-xl-4">
-                <div class="editor-field">
-                    @Html.DropDownList("AccountType", new List<SelectListItem>{
-                    new SelectListItem{ Text="Student", Value= AccountType.Student.ToString()},
-                    new SelectListItem{ Text="Saving", Value=AccountType.Savings.ToString()}
-                    }, "--- Select Account type---"
-                    )
-                </div>
-            </div>
-            
-            <button type="submit" class="btn btn-primary text-center">Add User</button>
 
+            <div class="form-group col-xl-4">
+                <label asp-for="AccountType">Choose an account type:</label>
+                <select asp-for="AccountType">
+                    <option value="Savings">Savings</option>
+                    <option value="Student">Student</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary text-center">Add User</button>
         </form>
     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @*<section>
+        <div>
+            <h1>
+               Add Customer
+            </h1>
+        </div>
+        <div>
+            <form method="post" autocomplete="on">
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <div class="form-group col-xl-4">
+                    <label asp-for="@Model.Item2.FirstName">First Name:</label>
+                    <input asp-for="@Model.Item2.FirstName" class="form-control" placeholder="First Name" />
+                    <span asp-validation-for="@Model.Item2.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-xl-4">
+                    <label asp-for="@Model.Item2.LastName">Last Name:</label>
+                    <input asp-for="@Model.Item2.LastName" class="form-control" placeholder="Last Name" />
+                    <span asp-validation-for="@Model.Item2.LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-xl-4">
+                    <label asp-for="@Model.Item2.Email">Email:</label>
+                    <input asp-for="@Model.Item2.Email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="@Model.Item2.Email" class="text-danger"></span>
+
+                </div>
+
+                <div class="form-group col-xl-4">
+                    <label asp-for="@Model.Item1.Birthday">Birthday:</label>
+                    <input type="date" asp-for="@Model.Item1.Birthday" class="form-control" placeholder="Birthdate" />
+                    <span asp-validation-for="@Model.Item1.Birthday" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-xl-4">
+                    <label asp-for="@Model.Item1.Gender">Choose a gender:</label>
+                    <select asp-for="@Model.Item1.Gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="PreferNotToSay">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-xl-4">
+                    <label asp-for="@Model.Item1.AccountType">Choose an account type:</label>
+                    <select asp-for="@Model.Item1.AccountType">
+                        <option value="Savings">Savings</option>
+                        <option value="Student">Student</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary text-center">Add User</button>
+            </form>
+        </div>
+
+    *@
 </section>

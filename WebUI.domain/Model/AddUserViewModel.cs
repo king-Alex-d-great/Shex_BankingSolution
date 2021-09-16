@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 namespace WebUI.domain.Model
 {
     public class AddUserViewModel
-    {        
+    {
+        public AddUserViewModel()
+        {
+
+        }
 
         [MinLength(4), MaxLength(50)]
         public string FirstName { get; set; }

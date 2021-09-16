@@ -1,5 +1,5 @@
 ﻿@using WebUI.domain.Model
-@model List<DisplayAllViewModel>
+@model List<User>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +7,7 @@
 
 <h1>Users</h1>
 <div>
-    <a class="btn btn-primary" asp-controller="Account" asp-action="AddUser">Add User</a>
+    <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollUser">Add User</a>
     <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollCustomer">Add Customer</a>
 </div>
 
@@ -26,7 +26,7 @@
             <tr>
                 <td>@user.FullName</td>
                 <td>@user.Email</td>
-                <td>@string.Join(" , ", user.Roles.ToList())</td>
+                @*<td>@string.Join(" , ", user.Roles.ToList())</td>*@
                 <td>
                     @*//should hold a dropdown list -- get, delete, update*@                    
                     <div class="dropdown">
