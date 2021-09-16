@@ -43,24 +43,48 @@ namespace WebUI.domain.Controllers
         }
 
         [HttpGet]
-        public IActionResult UpdateRole()
+        public async Task<IActionResult> UpdateRole(string Id)
         {
-            return View("UpdateRole");
+            var role = await _roleManager.FindByIdAsync(Id);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {Id} cannot be found";
+
+            }
+            var model = new EditRoleViewModel
+            {
+                Id = role.Id,
+                RoleName = role.Name
+            };
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateRole(string RoleName)
+        public async Task<IActionResult> UpdateRole(EditRoleViewModel model)
         {
-            if(RoleName != null)
+            var role = await _roleManager.FindByIdAsync(model.Id);
+            if (role == null)
             {
-                var role = await _roleManager.FindByNameAsync(RoleName);
-                var newName = new AppRole
+                ViewBag.ErrorMessage = $"Role with Id = {model.Id} cannot be found";
+
+            }
+            else
+            {
+                role.Name = model.RoleName;
+                var result = await _roleManager.UpdateAsync(role);
+                if (result.Succeeded)
                 {
-                    Name = role.Name
-                };
-                await _roleManager.UpdateAsync(newName);
+                    return RedirectToAction("Index");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
             }
             return RedirectToAction("Index");
+
+
         }
     }
 }
+
