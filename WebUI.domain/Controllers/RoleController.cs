@@ -34,12 +34,20 @@ namespace WebUI.domain.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string RoleName)
         {
-            if (RoleName != null)
+            try
             {
-                var role = await _roleManager.FindByNameAsync(RoleName);
-                await _roleManager.DeleteAsync(role);
+                if (RoleName != null)
+                {
+                    var role = await _roleManager.FindByNameAsync(RoleName);
+                    await _roleManager.DeleteAsync(role);
+                }
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            catch (System.Exception)
+            {
+                return RedirectToAction("Index");
+            }
+           
         }
 
         [HttpGet]
