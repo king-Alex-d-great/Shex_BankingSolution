@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ namespace WebUI.domain
     {
         public async static Task Main(string[] args)
         {
-            
+
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
@@ -44,5 +45,12 @@ namespace WebUI.domain
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+
+        public void GeneratePassword(char firstname, char lastname)
+        {
+            var midFourCharacters = (RandomNumberGenerator.GetInt32(10, 99)).ToString() + (RandomNumberGenerator.GetInt32(10, 99)).ToString();
+            Console.WriteLine((char)92);
+        }
     }
 }

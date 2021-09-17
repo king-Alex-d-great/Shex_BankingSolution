@@ -21,26 +21,10 @@ namespace WebUI.domain.Controllers
         }
 
 
-        //private readonly IUnitOfWork unitOfWork;
-
-        //public HomeController(IUnitOfWork _unitOfWork)
-        //{
-        //    unitOfWork = _unitOfWork;
-        //}
-
         public IActionResult Index()
         {
             return View();
-        }
-
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-       
-        
-        
+        }   
 
     }
 }
