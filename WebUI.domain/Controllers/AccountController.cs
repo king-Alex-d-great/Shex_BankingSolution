@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
-using OnlineBanking.Domain.Interfaces.Repositories;
-using OnlineBanking.Domain.Interfaces.Services;
-using OnlineBanking.Domain.Services;
-using OnlineBanking.Domain.UnitOfWork;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using WebUI.domain.Interfaces.Services;
-using WebUI.domain.Model;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
 using WebUI.domain.Middlewares;
+using WebUI.domain.Model;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -36,9 +30,9 @@ namespace WebUI.domain.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            _customerService = customerService;           
+            _customerService = customerService;
         }
-        
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -54,7 +48,7 @@ namespace WebUI.domain.Controllers
                     FullName = $"{model.FirstName} {model.LastName}",
                     Email = model.Email,
                     UserName = model.Email,
-                    CreatedBy= "Shola nejo",                  
+                    CreatedBy = "Shola nejo",
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -63,9 +57,9 @@ namespace WebUI.domain.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
 
-                   // var roles = await _userManager.GetRolesAsync(user);
+                    // var roles = await _userManager.GetRolesAsync(user);
                     // var user = _userService.Get(model.Email);
-                    return View("HomePage", user);                   
+                    return View("HomePage", user);
                 }
                 foreach (var error in result.Errors)
                 {
@@ -74,12 +68,9 @@ namespace WebUI.domain.Controllers
             }
             return View();
         }
+
+
         [HttpGet]
-        /*public IActionResult LogIn()
-        {
-            return View();
-        }
-*/
         public async Task<IActionResult> LogIn(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -102,7 +93,7 @@ namespace WebUI.domain.Controllers
 
                     return RedirectToAction("HomePage");
                 }
-              
+
             }
             ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
             return View(model);
@@ -122,7 +113,7 @@ namespace WebUI.domain.Controllers
             var result = await AddUser(model);
 
             if (result.Item1.Succeeded) return RedirectToAction("ViewAll");
-            
+
             ModelState.AddModelError(String.Empty, "Operation failed, try again!");
             return View();
         }
@@ -170,8 +161,8 @@ namespace WebUI.domain.Controllers
             }
 
             var (result, user) = await AddUserAsync(new IdentityViewModel
-                {Email = model.Email, FullName = $"{model.FirstName} {model.LastName}"});
-            
+            { Email = model.Email, FullName = $"{model.FirstName} {model.LastName}" });
+
             if (result.Succeeded)
             {
                 model.ReadOnlyCustomerProps = new ReadOnlyCustomerProps
@@ -187,16 +178,16 @@ namespace WebUI.domain.Controllers
 
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
-                //Send Mail To User With Credentials
-                var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
-                var client = new SendGridClient(apiKey);                
-              var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
-                var subject = "Sending with SendGrid is Fun";
-                var to = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
-                var plainTextContent = "and easy to do anywhere, even with C#";
-                var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);
+                // //Send Mail To User With Credentials
+                // var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                // var client = new SendGridClient(apiKey);
+                // var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
+                // var subject = "Sending with SendGrid is Fun";
+                // var to = model.Email;
+                // var plainTextContent = "and easy to do anywhere, even with C#";
+                // var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+                // var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                // var response = await client.SendEmailAsync(msg);
 
                 return RedirectToAction("ViewAll");
 
@@ -218,14 +209,14 @@ namespace WebUI.domain.Controllers
 
 
         [Authorize]
-        public  async Task<IActionResult> HomePage()
+        public async Task<IActionResult> HomePage()
         {
             var model = await _userManager.FindByIdAsync(User.GetUserId());
             return View(model);
         }
         public async Task<IActionResult> ViewAll()
         {
-            
+
             return View(await _userManager.Users.ToListAsync());
         }
         private async Task<List<string>> GetUserRoles(User user)
@@ -233,25 +224,37 @@ namespace WebUI.domain.Controllers
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteUser(string userName)
+        [HttpGet]
+        public IActionResult DeleteUser()
         {
-            if (userName != null)
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string Id)
+        {
+            try
             {
-                await _userManager.DeleteAsync(new User { UserName = userName });
+                if (Id == null)
+                {
+                    return RedirectToAction("DeleteUser");
+                }
+                if (Id != null)
+                {
+                    var user = await _userManager.FindByIdAsync(Id);
+                    await _userManager.DeleteAsync(user);
+                }
+                return RedirectToAction("ViewAll");
             }
-            return RedirectToAction();
-
+            catch (System.Exception)
+            {
+                return RedirectToAction("DeleteRole");
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUser(User user)
+        public IActionResult UpdateUser(User user)
         {
-            if (user != null)
-            {
-                await _userManager.UpdateAsync(user);
-            }
-            return RedirectToAction();
+            return View();
         }
         public async Task<(IdentityResult, User)> AddUser(AddUserViewModel model)
         {
@@ -261,7 +264,7 @@ namespace WebUI.domain.Controllers
                 Email = model.Email,
                 UserName = model.Email
             };
-           // var defaultPassword = new Guid().ToString("N").Substring(0, 8);
+            // var defaultPassword = new Guid().ToString("N").Substring(0, 8);
             var result = await _userManager.CreateAsync(user, "Alex-1234");
             return (result, user);
         }

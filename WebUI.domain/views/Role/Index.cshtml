@@ -6,14 +6,8 @@
 }
 
 <h1>Role Manager</h1>
-<form method="post" asp-action="AddRole" asp-controller="Role">
-    <div class="input-group">
-        <input name="roleName" class="form-control w-25">
-        <span class="input-group-btn">
-            <button class="btn btn-info">Add New Role</button>
-        </span>
-    </div>
-</form>
+
+<a  class="btn btn-info" asp-action="AddRole" asp-controller="Role">Click Here to add a new Role</a>
 
 <table class="table table-striped">
     <thead>
@@ -32,29 +26,12 @@
                 <td>@role.Name</td>
                 <td>@role.CreatedAt</td>
                 <td>@role.CreatedBy</td>
-                <td>
-                    @*//should hold a dropdown list -- get, delete, update*@
-                    @**@@*<a class="btn btn-primary" asp-controller="Account" asp-action="Update" asp-route-userId="@user.UserId">Manage User</a>*@
-
-                    <div class="dropdown">
-                        <button class="dropbtn">Manage Role</button>
-                        <div class="dropdown-content">
-                            <a  asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Id">Update</a>
-                            @*<a  asp-controller="Role" asp-action="DeleteRole">Delete</a> *@                           
-                        </div>
-                    </div>
-                </td>
+                <td><a asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Id" class="btn btn-info">Update</a></td>
+                <td><a asp-controller="Role" asp-action="DeleteRole" class="btn btn-info" asp-route-id="@role.Name">Delete</a></td>
             </tr>
         }
     </tbody>
 </table>
 
-<form method="post" asp-action="DeleteRole" asp-controller="Role">
-    <div class="input-group">
-        <p>Please Enter The Name of the Role You Want to Delete</p>
-        <input name="RoleName" type="text" class="form-control w-25">
-        <span class="input-group-btn">
-            <button class="btn btn-info">Delete Role</button>
-        </span>
-    </div>
-</form>
+
+

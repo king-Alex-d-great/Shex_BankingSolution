@@ -1,0 +1,16 @@
+﻿@using WebUI.domain.Controllers;
+@model List<User>
+
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<form method="post" asp-action="DeleteUser" asp-controller="Account">
+    <div class="input-group">
+        <span class="input-group-btn">
+            <button class="btn btn-info">Delete User</button>
+        </span>
+
+
+    </div>
+</form>
