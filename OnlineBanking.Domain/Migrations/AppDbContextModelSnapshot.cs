@@ -162,9 +162,9 @@ namespace OnlineBanking.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AccountNumber")
+                    b.Property<string>("AccountNumber")
                         .HasMaxLength(10)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int");
@@ -177,6 +177,9 @@ namespace OnlineBanking.Domain.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -227,6 +230,32 @@ namespace OnlineBanking.Domain.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("OnlineBanking.Domain.Entities.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(38,2)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TransactionMode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("OnlineBanking.Domain.Entities.User", b =>
@@ -282,6 +311,9 @@ namespace OnlineBanking.Domain.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("StillHasDefaultPassword")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -392,6 +424,15 @@ namespace OnlineBanking.Domain.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Account");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OnlineBanking.Domain.Entities.Transaction", b =>
+                {
+                    b.HasOne("OnlineBanking.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

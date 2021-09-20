@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +10,8 @@ using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
 using OnlineBanking.Domain.Interfaces.Repositories;
 using OnlineBanking.Domain.UnitOfWork;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
@@ -149,17 +154,17 @@ namespace WebUI.domain.Controllers
                 _customerService.Add(model);
 
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
-
+              
                 //Send Mail To User With Credentials
-                /*var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                var apiKey = "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";
                 var client = new SendGridClient(apiKey);                
-              var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
+                var from = new EmailAddress("egwunwokekc@gmail.com", "KCMicheal");
                 var subject = "Sending with SendGrid is Fun";
-                var to = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
+                var to = new EmailAddress("onahchidiebube@gmail.com");
                 var plainTextContent = "and easy to do anywhere, even with C#";
                 var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);*/
+                var response = await client.SendEmailAsync(msg);
 
                 return RedirectToAction("ViewAll");
 
