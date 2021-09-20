@@ -2,7 +2,7 @@
 
 using OnlineBanking.Domain.Enumerators;
 
-namespace OnlineBanking.Domain.Model
+namespace WebUI.domain.Model
 {
     public class UpdateViewModel 
     {

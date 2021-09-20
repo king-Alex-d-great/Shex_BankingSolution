@@ -1,4 +1,5 @@
-﻿using OnlineBanking.Domain.Entities;
+﻿using System;
+using OnlineBanking.Domain.Entities;
 using WebUI.domain.Model;
 
 namespace WebUI.domain.Interfaces.Services
@@ -7,5 +8,8 @@ namespace WebUI.domain.Interfaces.Services
     {
         int? Add(Customer customer);
         public int Add(EnrollCustomerViewModel enrollModel);
+        public Customer GetCustomer(string userId);
+        public Customer GetCustomerWithAccount(string accountId);
+
     }
 }

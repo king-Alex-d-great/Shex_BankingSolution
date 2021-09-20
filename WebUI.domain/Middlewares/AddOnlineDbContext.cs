@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
+using WebUI.domain.Interfaces.Services;
+using WebUI.domain.Services;
 
 namespace WebUI.domain.Middlewares
 {
@@ -14,6 +16,7 @@ namespace WebUI.domain.Middlewares
     {
         public static IServiceCollection AddDBConnection(this IServiceCollection services, IConfiguration configuration)
         {
+           
             services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(configuration.GetConnectionString("OBConnection")));
 
@@ -29,14 +32,8 @@ namespace WebUI.domain.Middlewares
                 options.Lockout.MaxFailedAccessAttempts = 4;
                 options.Lockout.AllowedForNewUsers = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-
+            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();          
             
-            // services.AddIdentity<User, IdentityRole>(options =>
-            // {
-            //     options.SignIn.RequireConfirmedEmail = false;
-            // } ).AddEntityFrameworkStores<AppDbContext>()
-            //     .AddDefaultTokenProviders();
 
             return services;
         }

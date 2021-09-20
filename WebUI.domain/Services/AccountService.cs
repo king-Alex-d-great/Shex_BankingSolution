@@ -2,14 +2,16 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using OnlineBanking.Domain.Interfaces.Services;
+
 
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Interfaces.Repositories;
-using OnlineBanking.Domain.Model;
-using OnlineBanking.Domain.UnitOfWork;
 
-namespace OnlineBanking.Domain.Services
+using OnlineBanking.Domain.UnitOfWork;
+using WebUI.domain.Interfaces.Services;
+using WebUI.domain.Model;
+
+namespace WebUI.domain.Services
 {
     public class AccountService : IAccountService
     {
@@ -171,20 +173,14 @@ namespace OnlineBanking.Domain.Services
             throw new NotImplementedException();
         }
 
-        public Account Register(RegisterViewModel model)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public int Update(UpdateViewModel model, int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Account Login(LoginViewModel model)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public Account Get(int userId)
         {

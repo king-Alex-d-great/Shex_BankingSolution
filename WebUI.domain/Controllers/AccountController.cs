@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
 using OnlineBanking.Domain.Interfaces.Repositories;
-using OnlineBanking.Domain.Interfaces.Services;
-using OnlineBanking.Domain.Services;
 using OnlineBanking.Domain.UnitOfWork;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
@@ -25,7 +23,7 @@ namespace WebUI.domain.Controllers
 {
     public class AccountController : Controller
     {
-        //should hold crud operation for user
+       
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
@@ -74,14 +72,11 @@ namespace WebUI.domain.Controllers
             }
             return View();
         }
-        [HttpGet]
-        /*public IActionResult LogIn()
-        {
-            return View();
-        }
-*/
+
+        [HttpGet]        
         public async Task<IActionResult> LogIn(string returnUrl = null)
         {
+           
             returnUrl ??= Url.Content("~/");
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -121,7 +116,8 @@ namespace WebUI.domain.Controllers
             if (!ModelState.IsValid) return View();
             var result = await AddUser(model);
 
-            if (result.Item1.Succeeded) return RedirectToAction("ViewAll");
+            if (result.Item1.Succeeded) 
+                return RedirectToAction("ViewAll");
             
             ModelState.AddModelError(String.Empty, "Operation failed, try again!");
             return View();
@@ -132,35 +128,8 @@ namespace WebUI.domain.Controllers
         {
             return View(new EnrollCustomerViewModel());
         }
-        /*public IActionResult EnrollCustomer()
-        {
-            var model = (new EnrollCustomerViewModel { }, new AddUserViewModel { });
-            return View(model);
-        }*/
+       
 
-
-        /*public async Task<IActionResult> EnrollCustomer([FromBody](EnrollCustomerViewModel enrollModel,AddUserViewModel addModel) model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-            var result = await AddUser(model.addModel);
-
-            if (!result.Item1.Succeeded)
-            {
-                ModelState.AddModelError(string.Empty, "An Error Occurred, Customer not created!!");
-                return View();
-            }
-             var AffectedRows =  _customerService.Add(model.enrollModel, result.Item2, new ClaimsViewModel { Username = User.Identity.Name, UserId = result.Item2.Id});
-
-            if (AffectedRows < 1)
-            {
-                ModelState.AddModelError(string.Empty, "A Database error occured!!");
-                return View();
-            }
-            return RedirectToAction("ViewAll");
-        } */
         [HttpPost]
         public async Task<IActionResult> EnrollCustomer(EnrollCustomerViewModel model)
         {
@@ -182,13 +151,13 @@ namespace WebUI.domain.Controllers
                     UpdatedAt = DateTime.Now
 
                 };
-
+                await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
                 _customerService.Add(model);
 
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
                 //Send Mail To User With Credentials
-                var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                /*var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
                 var client = new SendGridClient(apiKey);                
               var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
                 var subject = "Sending with SendGrid is Fun";
@@ -196,7 +165,7 @@ namespace WebUI.domain.Controllers
                 var plainTextContent = "and easy to do anywhere, even with C#";
                 var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);
+                var response = await client.SendEmailAsync(msg);*/
 
                 return RedirectToAction("ViewAll");
 
@@ -274,7 +243,9 @@ namespace WebUI.domain.Controllers
             {
                 FullName = model.FullName,
                 Email = model.Email,
-                UserName = model.Email
+                UserName = model.Email,
+                StillHasDefaultPassword = true,
+
             };
             var randPassword = "Alex-1234";
 

@@ -21,7 +21,6 @@ namespace WebUI.domain
             {
                 var service = scope.ServiceProvider;
                 var loggerFactory = service.GetRequiredService<ILoggerFactory>();
-
                 try
                 {
                     var context = service.GetRequiredService<AppDbContext>();

@@ -1,6 +1,6 @@
 ﻿
 
-namespace OnlineBanking.Domain.Model
+namespace WebUI.domain.Model
 {
     public class TransferViewModel 
     {

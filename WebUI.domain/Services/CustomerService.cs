@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
@@ -6,7 +7,7 @@ using OnlineBanking.Domain.Interfaces.Repositories;
 using OnlineBanking.Domain.UnitOfWork;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
-using WebUI.domain.Models;
+using OnlineBanking.Domain.Helpers.AccountGenerator;
 
 namespace WebUI.domain.Services
 {
@@ -36,26 +37,34 @@ namespace WebUI.domain.Services
                 Gender = enrollModel.Gender,
                 Account = new Account
                 {
-
                     AccountType = enrollModel.AccountType,
-                    AccountNumber = RandomNumberGenerator.GetInt32(9998, 9999) * RandomNumberGenerator.GetInt32(99998, 99999),
+                    AccountNumber = AccountNumberGenerator.GenerateAccountNumber(),
                     CreatedBy = enrollModel.ReadOnlyCustomerProps.CreatedBy,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    Balance = enrollModel.AccountType != AccountType.Savings ? 0 : 5000
-                },
+                    Balance = enrollModel.AccountType != AccountType.Savings ? 0 : 5000,
+                    IsActive = true,
 
+                },
             };
 
             _customerRepo.Add(customer);
             return _unitOfWork.Commit();
 
         }
-
-
-        public void Add(CustomerViewModel model)
+        public Customer GetCustomer(string userId)
         {
-            throw new NotImplementedException();
+            return _customerRepo.Find(a => a.UserId == userId).FirstOrDefault();
+        } 
+        
+        public Customer GetCustomer(Guid accountId)
+        {
+            return _customerRepo.Find(a => a.AccountId == accountId).FirstOrDefault();
+        }
+
+        public Customer GetCustomerWithAccount(string accountId)
+        {
+            return _customerRepo.Find(a => a.AccountId.ToString() == accountId).FirstOrDefault();
         }
     }
 }

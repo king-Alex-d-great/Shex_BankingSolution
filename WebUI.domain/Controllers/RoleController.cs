@@ -43,7 +43,7 @@ namespace WebUI.domain.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UpdateRole(string Id)
+        public IActionResult UpdateRole(string Id)
         {
             return View("UpdateRole");
         }

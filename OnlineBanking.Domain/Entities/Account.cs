@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using OnlineBanking.Domain.Enumerators;
 using OnlineBanking.Domain.Interfaces;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineBanking.Domain.Entities
@@ -14,13 +11,13 @@ namespace OnlineBanking.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-
         [MinLength(10)]
         [MaxLength(10)]
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
 
         [Column(TypeName = "decimal(38,2)")]
         public decimal Balance { get; set; }
+        public bool IsActive { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

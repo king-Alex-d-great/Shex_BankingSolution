@@ -12,9 +12,6 @@
     <h1>Date Created : @Model.CreatedAt</h1>
     <h1>Creator : @Model.CreatedBy</h1>
 
-
-
-
     <section style=@(@User.IsInRole("SuperAdmin")? "display:block": "display:none")>
         <h1>
             <a class="btn btn-primary text-center" asp-controller="Role" asp-action="Index">Manage Roles</a>
@@ -23,6 +20,12 @@
     </section>
 
     <section style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
+        <h1>
+            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Transfer">Transfer</a>
+            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Withdraw">Withdraw</a>
+            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Deposit">Deposit</a>
+            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Index">Transaction History</a>
+        </h1>
     </section>
 
 </div>
