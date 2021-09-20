@@ -22,6 +22,14 @@ namespace WebUI.domain.Controllers
             var roles = await _roleManager.Roles.ToListAsync();
             return View(roles);
         }
+
+        [HttpGet]
+        public IActionResult AddRole()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddRole(string RoleName)
         {
             if (ModelState.IsValid)
@@ -31,15 +39,33 @@ namespace WebUI.domain.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteRole(string RoleName)
+        [HttpGet]
+        public async Task<IActionResult> DeleteRole(string Id)
         {
-            if (RoleName != null)
+            return View("DeleteRole");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(EditRoleViewModel model)
+        {
+            try
             {
-                var role = await _roleManager.FindByNameAsync(RoleName);
-                await _roleManager.DeleteAsync(role);
+                var role = await _roleManager.FindByNameAsync(model.RoleName);
+                if ( role == null)
+                {
+                    ViewBag.ErrorMessage = $"Role with Name = {model.RoleName} cannot be found";
+                }
+                else
+                {  
+                    await _roleManager.DeleteAsync(role);
+                }
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            catch (System.Exception)
+            {
+                return RedirectToAction("DeleteRole");
+            }
+
         }
 
         [HttpGet]
