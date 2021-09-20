@@ -50,10 +50,4 @@
     <PackageReference Include="SendGrid" Version="9.24.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\AccountGenerator\" />
-    <Folder Include="Interfaces\Services\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>
