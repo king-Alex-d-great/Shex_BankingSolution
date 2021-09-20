@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +96,7 @@ namespace WebUI.domain.Controllers
                 }
 
             }
-            ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
+            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             return View(model);
         }
 
@@ -113,7 +116,7 @@ namespace WebUI.domain.Controllers
             if (result.Item1.Succeeded) 
                 return RedirectToAction("ViewAll");
             
-            ModelState.AddModelError(String.Empty, "Operation failed, try again!");
+            ModelState.AddModelError(string.Empty, "Operation failed, try again!");
             return View();
         }
 
