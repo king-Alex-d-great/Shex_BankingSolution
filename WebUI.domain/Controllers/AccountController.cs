@@ -198,30 +198,30 @@ namespace WebUI.domain.Controllers
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
 
-        [HttpGet]
-        public IActionResult DeleteUser()
+        /*[HttpGet]
+        public IActionResult DeleteUser(string Id)
         {
             return View();
-        }
+        }*/
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string Id)
         {
             try
             {
+                var user = await _userManager.FindByIdAsync(Id);
                 if (Id == null)
                 {
                     return RedirectToAction("DeleteUser");
                 }
-                if (Id != null)
+                else
                 {
-                    var user = await _userManager.FindByIdAsync(Id);
                     await _userManager.DeleteAsync(user);
                 }
                 return RedirectToAction("ViewAll");
             }
             catch (System.Exception)
             {
-                return RedirectToAction("DeleteRole");
+                return RedirectToAction("DeleteUser");
             }
         }
 

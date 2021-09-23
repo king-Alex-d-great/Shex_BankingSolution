@@ -12,26 +12,28 @@
 </div>
 
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Email</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
+<form method="post" asp-action="DeleteUser" asp-controller="Account">
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>@user.Id</td>
-                <td>@user.UserName</td>
-                <td>@user.FullName</td>
-                <td>@user.Email</td>
-                <td> <a asp-controller="Account" asp-action="UpdateUser" asp-route-id="@user.Id" class="btn btn-primary">Update </a>
-                   <td><a asp-controller="Account" asp-action="DeleteUser" class="btn text-danger">Delete</a></td>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Email</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.UserName</td>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td> <a asp-controller="Account" asp-action="UpdateUser" asp-route-id="@user.Id" class="btn btn-primary">Update </a>
+                    <td><button type="submit" asp-route-id="@user.Id" class="btn text-danger">Delete</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
