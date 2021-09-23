@@ -42,13 +42,13 @@ namespace WebUI.domain.Controllers
                 //redirect pr
                 var validation = _transactionService.Withdraw(model);
 
-                if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return RedirectToAction("HomePage", "Account"); }
-                if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return RedirectToAction("HomePage", "Account"); }
+                if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return View(); }
+                if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return View(); }
                 if (validation.isBalanceSufficient == false) { ModelState.AddModelError(String.Empty, "Insuffiecient funds"); return View(); }
                 if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
                 
                 TempData["WithdrawSuccess"] = "Withdrawal Successful!";
-                return RedirectToAction("HomePage", "Account");
+                return RedirectToAction("SuccessPage", "Transaction");
             }
             catch (Exception error)
             {
@@ -78,7 +78,7 @@ namespace WebUI.domain.Controllers
                 if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
 
                 TempData["WithdrawSuccess"] = "Deposit Successful!";
-                return RedirectToAction("HomePage", "Account");
+                return RedirectToAction("SuccessPage", "Transaction");
             } catch (Exception error)
             {
                 ModelState.AddModelError(String.Empty, error.Message);
@@ -113,7 +113,7 @@ namespace WebUI.domain.Controllers
 
 
                 TempData["TransferSuccess"] = "Transfer Successful!";
-                return RedirectToAction("HomePage", "Account");
+                return RedirectToAction("SuccessPage", "Transaction");
             }
             catch (Exception error)
             {
@@ -125,6 +125,12 @@ namespace WebUI.domain.Controllers
         public IActionResult TransactionHistory()
         {
            var transactions = _transactionService.GetAll();
+            return View();
+        }
+        [Authorize]
+        public IActionResult SuccessPage()
+        {
+          
             return View();
         }
     }
