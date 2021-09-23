@@ -7,6 +7,7 @@ using OnlineBanking.Domain.Interfaces.Repositories;
 using OnlineBanking.Domain.UnitOfWork;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
+using WebUI.domain.Models;
 
 namespace WebUI.domain.Services
 {

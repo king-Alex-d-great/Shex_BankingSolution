@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
-using OnlineBanking.Domain.Interfaces.Repositories;
-using OnlineBanking.Domain.UnitOfWork;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
+using WebUI.domain.Models;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -240,11 +242,27 @@ namespace WebUI.domain.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult UpdateUser(User user)
+        [HttpGet]
+        public IActionResult UpdateUser(string Id)
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(UpdateViewModel model)
+        {
+
+            var currentUserId = await _userManager.FindByIdAsync(model.Id);
+            
+            currentUserId.Email = model.Email;
+            currentUserId.FullName = $"{model.FirstName} {model.LastName}";
+
+            await _userManager.UpdateAsync(currentUserId);
+            return RedirectToAction("ViewAll");
+        }
+
+
+
         public async Task<(IdentityResult, User)> AddUser(AddUserViewModel model)
         {
             var user = new User
