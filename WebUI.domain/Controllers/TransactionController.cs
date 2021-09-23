@@ -124,7 +124,7 @@ namespace WebUI.domain.Controllers
 
         public IActionResult TransactionHistory()
         {
-           // var transactions = _transactionService.GetAll();
+           var transactions = _transactionService.GetAll();
             return View();
         }
     }

@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   @* <link href="~/css/site.css" rel="stylesheet" /> *@
+    <link href="~/css/site.css" rel="stylesheet" /> 
     <link href="~/css/custom.css" rel="stylesheet" />
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" type="text/css">
     <link href="~/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -17,6 +17,7 @@
     <link href="~/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
     <link href="~/cssbootstrap-social.css" rel="stylesheet" type="text/css">
     <link href="~/css/templatemo_style.css" rel="stylesheet" type="text/css">
+    <link href="~/css/templatemo-style-dashboard.css" rel="stylesheet" type="text/css">
    @*landing page*@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -29,31 +30,7 @@
     <link rel="stylesheet" href="~/lib/LandingPage/assets/css/owl.css">
 </head>
 <body>
-    @*<header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Shex Bankz</a>
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">ShEx Online Bank App</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-
-
-                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                        <partial name="_LoginPartial" />
-                        <ul class="navbar-nav flex-grow-1 justify-content-end">
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>*@
+   
 
     <div id="js-preloader" class="js-preloader">
         <div class="preloader-inner">
@@ -66,27 +43,22 @@
         </div>
     </div>
     <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
-        <div class="container">
+        <div class="container" style="width: 100%">
             <div class="row">
                 <div class="col-12">
                     <nav class="main-nav">
-                        <a href="index.html" class="logo">
-                            <h4>SH<span>eX</span></h4>
+                        <a asp-controller="Home" asp-action="Index" class="logo">
+                            <h4>SHeX<span>Bank</span></h4>
                         </a>
-
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
-                            <li class="scroll-to-section"><a href="#about">About Us</a></li>
-                            <li class="scroll-to-section"><a href="#services">Login</a></li>
-                            <li class="scroll-to-section"><a href="#portfolio">Portfolio</a></li>                            
-                            <li class="scroll-to-section"><a href="#contact">SignUp</a></li>
-                            <li class="scroll-to-section"><div class="main-red-button"><a href="#contact">Contact Now</a></div></li>
+                            <partial name="_LoginPartial" />
                         </ul>
-                        <a class='menu-trigger'>
-                            <span>Menu</span>
-                        </a>
 
-                    </nav>
+                            <a class='menu-trigger'>
+                                <span>Menu</span>
+                            </a>
+
+</nav>
                 </div>
             </div>
         </div>
@@ -100,13 +72,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.25s">
-                    <p>
-                        © Copyright 2021 Space Dynamic Co. All Rights Reserved.
                         <div class="container">
-                            &copy; 2021 - ShEx BANK - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <p> © Copyright 2021 - ShEx BANK - <a asp-controller="Home" asp-action="Privacy">Privacy</a><br/>All Rights Reserved.</p>
                         </div>
-
-                    </p>
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
 using OnlineBanking.Domain.Interfaces.Repositories;
@@ -104,6 +105,11 @@ namespace WebUI.domain.Services
             affectedRows = _unitOfWork.Commit();
             end:
             return (isAccountValid, isBalanceSufficient, isAccountActive, affectedRows);
+        }
+
+        public IEnumerable<Transaction> GetAll()
+        {
+           return _transactionRepo.GetAll();           
         }
     }
 }
