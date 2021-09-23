@@ -1,32 +1,217 @@
-﻿@model User
+﻿@model Tuple<User, Account, IEnumerable<Transaction>>
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<User>  userManager
 @{
     ViewData["Title"] = "Home Page";
 }
 
+<div class="homePage-start">
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-black mt-5 mb-5">Welcome back, <b>@Model.Item1?.FullName</b></h1>
+            </div>
+        </div>
 
-<div>
-    <h1>Name : @Model.FullName</h1>
-    <h1>Email : @Model.Email</h1>
-    <h1>Date Created : @Model.CreatedAt</h1>
-    <h1>Creator : @Model.CreatedBy</h1>
+        <div class="row media">
+            <div class="tm-block-col col-6 tm-col-avatar">
+                <div class="tm-block tm-block-avatar">
+                    <div class="tm-avatar-container">
+                        <img src="~/images/Avatar-Alex.png"
+                             alt="Avatar"
+                             class="tm-avatar img-fluid mb-4" />
+                    </div>
+                    @*<button class="btn btn-primary btn-block text-uppercase">
+                            Upload New Photo
+                        </button>*@
+                </div>
+            </div>
 
-    <section style=@(@User.IsInRole("SuperAdmin")? "display:block": "display:none")>
-        <h1>
-            <a class="btn btn-primary text-center" asp-controller="Role" asp-action="Index">Manage Roles</a>
-            <a class="btn btn-primary text-center" asp-controller="Account" asp-action="ViewAll">Manage Users</a>
-        </h1>
-    </section>
 
-    <section style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
-        <h1>
-            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Transfer">Transfer</a>
-            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Withdraw">Withdraw</a>
-            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Deposit">Deposit</a>
-            <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Index">Transaction History</a>
-        </h1>
-    </section>
+            <div class="col-6">
+                <div @*class="col-3"*@>
+                    <div class="card card-widget">
+                        <div class="card-body gradient-6">
+                            <div class="media">
+                                <span class="card-widget__icon"><i class="icon-home"></i></span>
+                                <div class="media-body">
+                                    <h2 class="card-widget__title">@Model.Item1?.Email</h2>
+                                    <h5 class="card-widget__subtitle">Username</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div @*class="col-3"*@>
+                    <div class="card card-widget" style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
+                        <div class="card-body gradient-5">
+                            <div class="media">
+                                <span class="card-widget__icon"><i class="icon-tag"></i></span>
+                                <div class="media-body">
+                                    <h2 class="card-widget__title">@Model.Item2?.AccountNumber</h2>
+                                    <h5 class="card-widget__subtitle">Account Number</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div @*class="col-3"*@>
+                    <div class="card card-widget" style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
+                        <div class="card-body gradient-4">
+                            <div class="media">
+                                <span class="card-widget__icon"><i class="icon-emotsmile"></i></span>
+                                <div class="media-body">
+                                    <h2 class="card-widget__title">@Model.Item2?.AccountType</h2>
+                                    <h5 class="card-widget__subtitle">Account type</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div @*class="col-3"*@>
+                    <div class="card card-widget" style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
+                        <div class="card-body gradient-8">
+                            <div class="media">
+                                <span class="card-widget__icon"><i class="icon-ghost"></i></span>
+                                <div class="media-body">
+                                    <h2 class="card-widget__title">@Model.Item2?.Balance</h2>
+                                    <h5 class="card-widget__subtitle">Account Balance</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div @*class="col-3"*@>
+                    <div class="card card-widget" style=@(@User.IsInRole("SuperAdmin")? "display:block": "display:none")>
+                        <div class="card-body gradient-5">
+                            <div class="media">
+                                <span class="card-widget__icon"><i class="icon-ghost"></i></span>
+                                <div class="media-body">
+                                    <h2 class="card-widget__title">
+                                        <a class="text-center" asp-controller="Role" asp-action="Index" style="color: white !important; border-bottom: 2px solid white !important">Manage Roles</a>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div @*class="col-3"*@>
+                    <div class="card card-widget" style=@(@User.IsInRole("SuperAdmin")? "display:block": "display:none")>
+                        <div class="card-body gradient-4">
+                            <div class="media">
+                                <span class="card-widget__icon"><i class="icon-ghost"></i></span>
+                                <div class="media-body">
+                                    <h2 class="card-widget__title">
+                                        <a class="text-center" style="color:white !important; border-bottom: 2px solid white !important" asp-controller="Account" asp-action="ViewAll">Manage Users</a>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-   
+
+<section style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
+    <h1>
+        <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Transfer">Transfer</a>
+        <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Withdraw">Withdraw</a>
+        <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Deposit">Deposit</a>
+        <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Index">Transaction History</a>
+    </h1>
+</section>
+
+<div class="col-12 tm-block-col" style=@(@User.IsInRole("Customer")? "display:block": "display:none")>
+    <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+        <h2 class="tm-block-title">Transaction List</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">STATUS</th>
+                    <th scope="col">TYPE</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model?.Item3)
+                {
+                    <tr>
+                        <th scope="row"><b>@item?.Id</b></th>
+                        <td>
+                            <div class="tm-status-circle moving">
+                            </div>Moving
+                        </td>
+                        <td><b>@item?.TransactionMode</b></td>
+                        <td><b>@item?.Amount</b></td>
+                        <td><b>@item?.TimeStamp</b></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<!-- https://jquery.com/download/ -->
+<script src="js/moment.min.js"></script>
+<!-- https://momentjs.com/ -->
+<script src="js/Chart.min.js"></script>
+<!-- http://www.chartjs.org/docs/latest/ -->
+<script src="js/bootstrap.min.js"></script>
+<!-- https://getbootstrap.com/ -->
+<script src="js/tooplate-scripts.js"></script>
+<script>
+    Chart.defaults.global.defaultFontColor = 'white';
+    let ctxLine,
+        ctxBar,
+        ctxPie,
+        optionsLine,
+        optionsBar,
+        optionsPie,
+        configLine,
+        configBar,
+        configPie,
+        lineChart;
+    barChart, pieChart;
+    // DOM is ready
+    $(function () {
+        drawLineChart(); // Line Chart
+        drawBarChart(); // Bar Chart
+        drawPieChart(); // Pie Chart
+
+        $(window).resize(function () {
+            updateLineChart();
+            updateBarChart();
+        });
+    })
+</script>
+
+
+
+
+@*<div class="homePage-start">
+        <h1>Name : @Model.FullName</h1>
+        <h1>Email : @Model.Email</h1>
+        <h1>Date Created : @Model.CreatedAt</h1>
+        <h1>Creator : @Model.CreatedBy</h1>
+
+        <section style=@(@User.IsInRole("SuperAdmin")? "display:block": "display:none")>
+            <h1>
+                <a class="btn btn-primary text-center" asp-controller="Role" asp-action="Index">Manage Roles</a>
+                <a class="btn btn-primary text-center" asp-controller="Account" asp-action="ViewAll">Manage Users</a>
+            </h1>
+        </section>
+
+
+
+    </div>
+*@

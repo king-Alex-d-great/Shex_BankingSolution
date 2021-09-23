@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,13 +27,17 @@ namespace WebUI.domain.Controllers
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ICustomerService _customerService;
+        private readonly IAccountService _accountService;
+        private readonly ITransactionService _transactionService;
 
-        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager, ICustomerService customerService)
+        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager, ICustomerService customerService, IAccountService accountService, ITransactionService transactionService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _customerService = customerService;
+            _accountService = accountService;
+            _transactionService = transactionService;
         }
 
         [HttpGet]
@@ -95,7 +102,7 @@ namespace WebUI.domain.Controllers
                 }
 
             }
-            ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
+            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             return View(model);
         }
 
@@ -115,7 +122,7 @@ namespace WebUI.domain.Controllers
             if (result.Item1.Succeeded)
                 return RedirectToAction("ViewAll");
 
-            ModelState.AddModelError(String.Empty, "Operation failed, try again!");
+            ModelState.AddModelError(string.Empty, "Operation failed, try again!");
             return View();
         }
 
@@ -144,11 +151,15 @@ namespace WebUI.domain.Controllers
                     UserId = user.Id,
                     CreatedBy = User.GetUserName(),
                     CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now
-
+                    UpdatedAt = DateTime.Now, 
                 };
                 await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
-                _customerService.Add(model);
+                var customerAddReport = _customerService.Add(model);
+
+                if (customerAddReport.isAgeLessThanMaximumAge == false) { ModelState.AddModelError(string.Empty, "A person above age 100 cannot be a customer!"); return View(); }
+                if (customerAddReport.isAgeMoreThanMinimumAge == false) { ModelState.AddModelError(string.Empty, "A Person must be at least one year old to have an account!"); return View(); }
+                if (customerAddReport.AffectedRows < 0) { ModelState.AddModelError(string.Empty, "Operation failed, please try again!"); return View(); }
+
 
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
@@ -185,12 +196,18 @@ namespace WebUI.domain.Controllers
         [Authorize]
         public async Task<IActionResult> HomePage()
         {
+            Account account = null; 
             var model = await _userManager.FindByIdAsync(User.GetUserId());
-            return View(model);
+            var customer = _customerService.GetCustomer(model.Id);
+            var transactions = _transactionService.GetAll();
+            if (customer == null) goto end;
+            account = _accountService.Get(customer.AccountId);
+        
+           end:
+            return View(Tuple.Create(model,account,transactions));
         }
         public async Task<IActionResult> ViewAll()
         {
-
             return View(await _userManager.Users.ToListAsync());
         }
         private async Task<List<string>> GetUserRoles(User user)
@@ -277,5 +294,6 @@ namespace WebUI.domain.Controllers
             return (result, user);
         }
 
+        
     }
 }
