@@ -8,6 +8,7 @@ using OnlineBanking.Domain.UnitOfWork;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
 using OnlineBanking.Domain.Helpers.AccountGenerator;
+using OnlineBanking.Domain.Helpers.AgeManager;
 
 namespace WebUI.domain.Services
 {
@@ -28,8 +29,12 @@ namespace WebUI.domain.Services
             int? result = _unitOfWork.Commit();
             return result;
         }
-        public int Add(EnrollCustomerViewModel enrollModel)
+        public (bool isAgeMoreThanMinimumAge, bool isAgeLessThanMaximumAge, int AffectedRows) Add (EnrollCustomerViewModel enrollModel)
         {
+            int AffectedRows = default;
+            var isAgeValid = AgeValidator.isAgeValid(enrollModel.Birthday.Value);
+            if (isAgeValid.isAgeMaximumAge == false || isAgeValid.isAgeMinimumAge == false) goto end;
+
             var customer = new Customer
             {
                 UserId = enrollModel.ReadOnlyCustomerProps.UserId,
@@ -44,13 +49,12 @@ namespace WebUI.domain.Services
                     UpdatedAt = DateTime.Now,
                     Balance = enrollModel.AccountType != AccountType.Savings ? 0 : 5000,
                     IsActive = true,
-
                 },
             };
-
             _customerRepo.Add(customer);
-            return _unitOfWork.Commit();
-
+            AffectedRows = _unitOfWork.Commit();
+        end:
+            return (isAgeValid.isAgeMinimumAge, isAgeValid.isAgeMaximumAge, AffectedRows);
         }
         public Customer GetCustomer(string userId)
         {

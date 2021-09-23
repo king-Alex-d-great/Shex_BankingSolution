@@ -1,24 +1,4 @@
-/* 
-Form Pack
-http://www.templatemo.com/preview/templatemo_418_form_pack
-	
-templatemo 418 form pack
 
-Credit: www.templatemo.com
-	1. General
-	2. login-form-1
-	3. login-form-2
-	4. inline-login
-	5. create-account
-	6. forgot-password
-	7. contact-form-1
-	8. contact-form-2
-	9. payment-form
-	10. Media Queries
-	
---------------------------------------------*/
-/* 1. General
---------------------------------------------*/
 
 *, body { font-family: 'Open Sans', sans-serif; }
 body { margin-bottom: 30px; }
@@ -43,7 +23,7 @@ h2 {
 .green { color: #3C3; }
 .gray { color: #999; }
 
-.form-horizontal .control-label { padding-top: 0; }
+.form-horizontal .control-label { padding-top: 0; font-size: 1.5rem; }
 .form-horizontal.templatemo-payment-form .radio.templatemo-no-padding-top {	padding-top: 0; }
 .control-wrapper {
 	position: relative;
@@ -133,13 +113,16 @@ h2 {
 /*-------------------------------------
 3. login-form-2
 ---------------------------------------*/
+.login-start {
+	margin-top: 90px;
+}
 .templatemo-login-form-2 {
 	background-color: rgba(13,13,13,0.25);
 	border-radius: 8px;
 	color: #fff;
 	font-weight: 300;
 	max-width: 650px;
-	padding: 0 30px 30px 30px;
+	padding: 30px;
 	margin: 30px auto 0 auto;
 }
 .templatemo-login-form-2 h1 { color: #fff; margin-bottom: 40px; }
@@ -148,14 +131,33 @@ h2 {
 	background-color: rgba(83, 78, 78, 0.35);
 	border: 1px solid rgba(255, 255, 255, 0.27);
 	color: rgb(255,255,255);
+	padding: 15px;
 }
 .templatemo-login-form-2 .templatemo-input-icon-container .fa {	color: rgb(190, 190, 190); }
 .templatemo-login-form-2 .control-label { margin-bottom: 10px; }
 .templatemo-login-form-2 .btn {	width: 100%; }
-.templatemo-login-form-2 .btn-social { max-width: 220px; }
+.templatemo-login-form-2 .btn-social { max-width: 220px;}
 .templatemo-login-form-2 label { font-weight: 400; }
 .templatemo-login-form-2 .templatemo-one-signin { border-right: 1px solid rgba(200, 200, 200, 0.5); }
-
+.sm-label {font-size: 1.5rem;}
+.facebook, .twitter, .plus {font-size: 1.1rem !important;}
+.plus {	background-color: #fe3f40 !important;}
+.plus:hover, .plus:active {
+	background-color: #dd4b39 !important;
+	border-color: rgba(0,0,0,0.2);
+}
+.twitter {	background-color: #55acee !important;}
+.twitter:hover, .twitter:active {
+	background-color: #2795e9 !important;
+	border-color: rgba(0,0,0,0.2);
+}
+.facebook {
+	background-color: #3b5998 !important;
+}
+.facebook:hover, .facebook:active {
+	background-color: #2d4373 !important;
+	border-color: rgba(0,0,0,0.2);
+}
 
 /*-------------------------------------
 4. inline-login
@@ -172,7 +174,7 @@ h2 {
 .templatemo-header form { margin-top: 25px; }
 .templatemo-header .form-inline .form-group { vertical-align: top; }
 
-.logo { margin: 18px; }
+.logo { margin: 11px; }
 
 
 /*-------------------------------------
@@ -320,4 +322,9 @@ h2 {
 	.templatemo-contact-form-2 .checkbox {	margin-bottom: 15px; }
 	.templatemo-contact-form-2 { padding: 30px 30px 0 30px;	}
 	.templatemo-radio-container { margin-left: 30px; }
+}
+
+/*login*/
+.newed {
+	border: 2px solid black;
 }

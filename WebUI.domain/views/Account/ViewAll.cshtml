@@ -17,26 +17,20 @@
         <tr>
             <th>Id</th>
             <th>Username</th>
-            <th>Role</th>
+            <th>Full Name</th>
+            <th>Email</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var user in Model)
         {
             <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
                 <td>@user.FullName</td>
                 <td>@user.Email</td>
-                @*<td>@string.Join(" , ", user.Roles.ToList())</td>*@
-                <td>
-                    @*//should hold a dropdown list -- get, delete, update*@                    
-                    <div class="dropdown">
-                        <button class="dropbtn">Manage User</button>
-                        <div class="dropdown-content">
-                            <a asp-controller="Account" asp-action="UpdateRole">Update </a>
-                            <a asp-controller="Account" asp-action="DeleteUser">Delete</a>
-                        </div>
-                    </div>
-                </td>
+                <td> <a asp-controller="Account" asp-action="UpdateUser" asp-route-id="@user.Id" class="btn btn-primary">Update </a>
+                   <td><a asp-controller="Account" asp-action="DeleteUser" class="btn text-danger">Delete</a></td>
             </tr>
         }
     </tbody>

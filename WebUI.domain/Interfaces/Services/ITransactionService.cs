@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OnlineBanking.Domain.Entities;
 using WebUI.domain.Models.TransactionServiceModels;
 
 namespace WebUI.domain.Interfaces.Services
@@ -20,5 +21,6 @@ namespace WebUI.domain.Interfaces.Services
             int affectedRows
             ) Transfer(TransferViewModel model);
         public (bool isAccountValid, bool isAccountActive, int affectedRows) Deposit(DepositViewModel model);
+        public IEnumerable<Transaction> GetAll();
     }
 }
