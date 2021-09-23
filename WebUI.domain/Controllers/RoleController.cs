@@ -23,12 +23,6 @@ namespace WebUI.domain.Controllers
             return View(roles);
         }
 
-        [HttpGet]
-        public IActionResult AddRole()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> AddRole(string RoleName)
         {

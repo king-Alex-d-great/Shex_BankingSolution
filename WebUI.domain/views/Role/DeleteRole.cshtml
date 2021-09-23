@@ -1,5 +1,5 @@
-﻿@using OnlineBanking.Domain.Model;
-@model EditRoleViewModel;
+﻿@using OnlineBanking.Domain.Model
+@model EditRoleViewModel
 
 @{
     ViewData["Title"] = "Delete Role";
@@ -7,16 +7,16 @@
 
 <form method="post" asp-action="DeleteRole" asp-controller="Role">
     <div class="form-group row">
-        <label asp-for="Id" class="col-sm-2 col-form-label"></label>
+        <label asp-for="RoleName" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
             <input asp-for="Id" disabled class="form-control" />
         </div>
     </div>
-    <div class="input-group">
-        <p>Please ReEnter  You Want to Delete</p>
-        <input name="RoleName" type="text" class="form-control w-25">
-        <span class="input-group-btn">
+    <div class="form-group row">
+        <label asp-for="Id" class="col-sm-2 col-form-label">Please Re Enter Role Name</label>
+        <div class="col-sm-10">
+            <input asp-for="RoleName" class="form-control" />
+        </div>
             <button class="btn btn-info">Delete Role</button>
-        </span>
     </div>
 </form>
