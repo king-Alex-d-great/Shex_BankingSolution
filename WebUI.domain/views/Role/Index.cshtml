@@ -9,7 +9,7 @@
 
 <form method="post" asp-action="AddRole" asp-controller="Role">
     <div class="input-group">
-        <input name="roleName" class="form-control w-25">
+        <input name="roleName" class="form-control w-25 col-xs-4">
         <span class="input-group-btn">
             <button class="btn btn-info">Add New Role</button>
         </span>
@@ -59,7 +59,7 @@
             <td>@role.Name</td>
             <td>@role.CreatedAt</td>
             <td>@role.CreatedBy</td>
-                <td><a asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Id" class="btn btn-info">Update</a></td>
+                <td><a asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Name" class="btn btn-info">Update</a></td>
                 <td><a asp-controller="Role" asp-action="DeleteRole" class="btn btn-info" asp-route-id="@role.Name">Delete</a></td>
         </tr>
         }

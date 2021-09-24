@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +41,13 @@ namespace WebUI.domain
             services.AddScoped<IAccountService, AccountServices>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddAuthentication()
+                .AddGoogle(opts =>
+                {
+                    opts.ClientId = "150081699001-fh4nhbnbkc483ue538966qpq70p9fa5v.apps.googleusercontent.com";
+                    opts.ClientSecret = "-6P374i2j4tY2T-XCf8bvaFF";
+                    opts.SignInScheme = IdentityConstants.ExternalScheme;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +81,7 @@ namespace WebUI.domain
                     name: "default", 
                     pattern: "{controller=home}/{action=index}/{id?}");
             });
+            
         }
     }
 }

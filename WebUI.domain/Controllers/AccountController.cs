@@ -15,6 +15,7 @@ using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
 using WebUI.domain.Models;
+using System.Security.Claims;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -104,6 +105,51 @@ namespace WebUI.domain.Controllers
             }
             ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             return View(model);
+        }
+
+        [AllowAnonymous]
+        public IActionResult GoogleLogin()
+        {
+            string redirectUrl = Url.Action("GoogleResponse", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return new ChallengeResult("Google", properties);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo =
+            {
+                info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
+            };
+            if (result.Succeeded)
+                return View(userInfo);
+            else
+            {
+                var user = new User
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
+                };
+
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if(identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if(identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return View(userInfo);
+                    }
+                }
+                return RedirectToAction("Login");
+            }
+
         }
 
         [HttpGet]
