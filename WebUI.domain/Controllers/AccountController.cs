@@ -152,6 +152,50 @@ namespace WebUI.domain.Controllers
 
         }
 
+        [AllowAnonymous]
+        public IActionResult FacebookLogin()
+        {
+            string redirectUrl = Url.Action("FacebookResponse", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return new ChallengeResult("Facebook", properties);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> FacebookResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo =
+            {
+                info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
+            };
+            if (result.Succeeded)
+                return RedirectToAction("HomePage");
+            else
+            {
+                var user = new User
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
+                };
+
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if (identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if (identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("HomePage");
+                    }
+                }
+                return RedirectToAction("Login");
+            }
+
+        }
+
         [HttpGet]
         public IActionResult EnrollUser()
         {
@@ -272,7 +316,6 @@ namespace WebUI.domain.Controllers
             try
             {
                 var user = await _userManager.FindByIdAsync(Id);
-                _
                 if (Id == null)
                 {
                     return RedirectToAction("DeleteUser");
