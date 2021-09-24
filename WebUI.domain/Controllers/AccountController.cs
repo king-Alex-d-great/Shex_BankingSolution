@@ -13,6 +13,7 @@ using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
 using WebUI.domain.Models;
+using System.Security.Claims;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -105,7 +106,96 @@ namespace WebUI.domain.Controllers
             ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             return View(model);
         }
-        [Authorize]
+
+        [AllowAnonymous]
+        public IActionResult GoogleLogin()
+        {
+            string redirectUrl = Url.Action("GoogleResponse", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return new ChallengeResult("Google", properties);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo =
+            {
+                info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
+            };
+            if (result.Succeeded)
+                return RedirectToAction("HomePage");
+            else
+            {
+                var user = new User
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
+                };
+
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if(identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if(identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("HomePage");
+                    }
+                }
+                return RedirectToAction("Login");
+            }
+
+        }
+
+        [AllowAnonymous]
+        public IActionResult FacebookLogin()
+        {
+            string redirectUrl = Url.Action("FacebookResponse", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return new ChallengeResult("Facebook", properties);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> FacebookResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo =
+            {
+                info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
+            };
+            if (result.Succeeded)
+                return RedirectToAction("HomePage");
+            else
+            {
+                var user = new User
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
+                };
+
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if (identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if (identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("HomePage");
+                    }
+                }
+                return RedirectToAction("Login");
+            }
+
+        }
+
         [HttpGet]
         public IActionResult EnrollUser()
         {
@@ -219,26 +309,26 @@ namespace WebUI.domain.Controllers
         public IActionResult DeleteUser()
         {
             return View();
-        }
+        }*/
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string Id)
         {
             try
             {
+                var user = await _userManager.FindByIdAsync(Id);
                 if (Id == null)
                 {
                     return RedirectToAction("DeleteUser");
                 }
-                if (Id != null)
+                else
                 {
-                    var user = await _userManager.FindByIdAsync(Id);
                     await _userManager.DeleteAsync(user);
                 }
                 return RedirectToAction("ViewAll");
             }
             catch (System.Exception)
             {
-                return RedirectToAction("DeleteRole");
+                return RedirectToAction("DeleteUser");
             }
         }
         [Authorize]
@@ -256,6 +346,7 @@ namespace WebUI.domain.Controllers
             
             currentUserId.Email = model.Email;
             currentUserId.FullName = $"{model.FirstName} {model.LastName}";
+            currentUserId.PhoneNumber = model.PhoneNumber;
 
             await _userManager.UpdateAsync(currentUserId);
             return RedirectToAction("ViewAll");
