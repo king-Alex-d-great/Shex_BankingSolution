@@ -51,22 +51,27 @@ namespace WebUI.domain.Services
             bool isReciepientAccountActive,
             bool isReciepientAccountDifferent,
             bool isReciepientCustomerExistent,
-            int affectedRows
+            int affectedRows, bool willReduceBankMaintenanceFee
             )  Transfer(TransferViewModel model)
         {
             //get two accounts
             var senderAccount = _accountService.Get(model.customer.AccountId);
             var reciepientAccount = _accountService.Get(model.ReciepientAccountNumber);
             var receipientCustomerAccount = _customerService.GetCustomerWithAccount(reciepientAccount?.Id.ToString()); 
-
             var affectedRows = 0;
-            var isSenderAccountValid = senderAccount != null ? true : false;
-            var isReciepientAccountValid = reciepientAccount != null ? true : false;
-            var isReciepientCustomerExistent = receipientCustomerAccount != null ? true : false;
-            var isBalanceSufficient = senderAccount?.Balance > model.Amount ? true : false;
-            var isSenderAccountActive = senderAccount?.IsActive != false ? true : false;
-            var isReciepientAccountActive = reciepientAccount?.IsActive == false ? false : true;
-            var isReciepientAccountDifferent = reciepientAccount?.AccountNumber != senderAccount?.AccountNumber ? true : false;
+            var isSenderAccountValid = senderAccount != null;
+            var isReciepientAccountValid = reciepientAccount != null ;
+            var isReciepientCustomerExistent = receipientCustomerAccount != null;
+            var isBalanceSufficient = senderAccount?.Balance >= model.Amount;
+            var isSenderAccountActive = senderAccount?.IsActive != false ;
+            var isReciepientAccountActive = reciepientAccount?.IsActive == false;
+            var isReciepientAccountDifferent = reciepientAccount?.AccountNumber != senderAccount?.AccountNumber ;
+            bool willReduceBankMaintenanceFee = false;
+
+            if (senderAccount.AccountType == AccountType.Savings && isBalanceSufficient)
+            {
+                willReduceBankMaintenanceFee = (senderAccount.Balance -= model.Amount) < 5000 ? true : false;
+            }
 
             if (isSenderAccountValid == false ||
                 isReciepientAccountValid == false ||
@@ -84,7 +89,7 @@ namespace WebUI.domain.Services
             _transactionRepo.Add(reciepientTransaction);
             affectedRows = _unitOfWork.Commit();
         end:
-            return (isSenderAccountValid, isReciepientAccountValid, isBalanceSufficient, isSenderAccountActive, isReciepientAccountActive, isReciepientAccountDifferent,  isReciepientCustomerExistent,affectedRows);
+            return (isSenderAccountValid, isReciepientAccountValid, isBalanceSufficient, isSenderAccountActive, isReciepientAccountActive, isReciepientAccountDifferent,  isReciepientCustomerExistent,affectedRows, willReduceBankMaintenanceFee);
  }
 
         public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows,bool willReduceBankMaintenanceFee) Withdraw(WithdrawViewModel model)
@@ -92,17 +97,17 @@ namespace WebUI.domain.Services
             int affectedRows = 0;
             var account = _accountService.Get(model.customer.AccountId);
 
-            var isBalanceSufficient = account != null;
-            var isAccountValid = account?.Balance > model?.Amount;
-            var isAccountActive = account?.Balance > model?.Amount;
+            var isAccountValid= account != null;
+            var isBalanceSufficient= account?.Balance >= model?.Amount;
+            var isAccountActive = account.IsActive;
             bool willReduceBankMaintenanceFee = false;
 
             if (account.AccountType == AccountType.Savings && isBalanceSufficient)
             {
-                willReduceBankMaintenanceFee = (account.Balance -= model.Amount) >= 5000;
+                willReduceBankMaintenanceFee = (account.Balance -= model.Amount) < 5000 ? true : false;
             }
 
-            if (isAccountValid == false || isBalanceSufficient == false || isAccountActive == false || willReduceBankMaintenanceFee == false) goto end;
+            if (isAccountValid == false || isBalanceSufficient == false || isAccountActive == false || willReduceBankMaintenanceFee == true) goto end;
 
             account.Balance -= model.Amount;
             var transaction = new Transaction { Amount = model.Amount, TimeStamp = System.DateTime.Now, TransactionMode = TransactionType.Debit, UserId = model?.customer?.UserId };

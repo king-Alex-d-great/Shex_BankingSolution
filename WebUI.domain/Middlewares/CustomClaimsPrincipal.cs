@@ -25,13 +25,6 @@ namespace WebUI.domain.Middlewares
             //claims are like properties associated with a user??
            return user.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value);                       
         }
-        public static IEnumerable<string> GetIndividualUserRoles (string Id)
-        {
-            //claims are like properties associated with a user??
-
-
-
-           return user.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value);                       
-        }
+        
     }
 }

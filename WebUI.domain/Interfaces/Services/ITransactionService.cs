@@ -9,7 +9,7 @@ namespace WebUI.domain.Interfaces.Services
 {
     public interface ITransactionService
     {
-        public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows) Withdraw(WithdrawViewModel model);
+        public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows, bool willReduceBankMaintenanceFee) Withdraw(WithdrawViewModel model);
         public (
             bool isSenderAccountValid,
             bool isReciepientAccountValid,
