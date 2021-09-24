@@ -23,10 +23,8 @@ namespace WebUI.domain.Middlewares
         public static IEnumerable<string> GetUserRoles (this ClaimsPrincipal user)
         {
             //claims are like properties associated with a user??
-           return user.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value);
-                       
+           return user.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value);                       
         }
-
-
+        
     }
 }

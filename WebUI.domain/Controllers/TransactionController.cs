@@ -9,6 +9,7 @@ using WebUI.domain.Models.TransactionServiceModels;
 
 namespace WebUI.domain.Controllers
 {
+    [Authorize]
     public class TransactionController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -44,7 +45,9 @@ namespace WebUI.domain.Controllers
 
                 if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return View(); }
                 if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return View(); }
-                if (validation.isBalanceSufficient == false) { ModelState.AddModelError(String.Empty, "Insuffiecient funds"); return View(); }
+                if (validation.isBalanceSufficient == false) { ModelState.AddModelError(String.Empty, "Insufficient funds"); return View(); }
+                if (validation.willReduceBankMaintenanceFee == true) { ModelState.AddModelError(String.Empty, "Insufficient funds!A maintenance fee of $5000 is required for a savings account "); return View(); }
+                
                 if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
                 
                 TempData["WithdrawSuccess"] = "Withdrawal Successful!";
@@ -107,6 +110,8 @@ namespace WebUI.domain.Controllers
                 if (validation.isSenderAccountActive == false) { ModelState.AddModelError(String.Empty, "Your Account has been deactivated, Please visit any of our branches for clarification"); return View(); }
                 if (validation.isReciepientAccountActive == false) { ModelState.AddModelError(String.Empty, "You cannot transfer to this Account, because it is either invalid or has been deactivated!"); return View(); ; }
                 if (validation.isBalanceSufficient == false) { ModelState.AddModelError(String.Empty, "Insuffiecient funds"); return View(); }
+                if (validation.willReduceBankMaintenanceFee == true) { ModelState.AddModelError(String.Empty, "Insufficient funds!A maintenance fee of $5000 is required for a savings account "); return View(); }
+
                 if (validation.isReciepientAccountDifferent == false) { ModelState.AddModelError(String.Empty, "You cannot transfer to yourself!"); return View(); }
                 if (validation.isReciepientCustomerExistent == false) { ModelState.AddModelError(String.Empty, "Recipient customer not found!"); return View(); }
                 if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }

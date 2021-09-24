@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebUI.domain.Controllers
 {
+    [Authorize]
     public class RoleController : Controller
     {
         private readonly RoleManager<AppRole> _roleManager;

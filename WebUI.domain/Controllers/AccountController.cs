@@ -8,18 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using OnlineBanking.Domain.Helpers.PasswordGenerator;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
 using WebUI.domain.Models;
+using System.Security.Claims;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
 namespace WebUI.domain.Controllers
 {
+
     public class AccountController : Controller
     {
 
@@ -39,7 +39,8 @@ namespace WebUI.domain.Controllers
             _accountService = accountService;
             _transactionService = transactionService;
         }
-
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpGet]
         public IActionResult Register()
         {
@@ -106,6 +107,95 @@ namespace WebUI.domain.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
+        public IActionResult GoogleLogin()
+        {
+            string redirectUrl = Url.Action("GoogleResponse", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return new ChallengeResult("Google", properties);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo =
+            {
+                info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
+            };
+            if (result.Succeeded)
+                return RedirectToAction("HomePage");
+            else
+            {
+                var user = new User
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
+                };
+
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if(identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if(identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("HomePage");
+                    }
+                }
+                return RedirectToAction("Login");
+            }
+
+        }
+
+        [AllowAnonymous]
+        public IActionResult FacebookLogin()
+        {
+            string redirectUrl = Url.Action("FacebookResponse", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return new ChallengeResult("Facebook", properties);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> FacebookResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo =
+            {
+                info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
+            };
+            if (result.Succeeded)
+                return RedirectToAction("HomePage");
+            else
+            {
+                var user = new User
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
+                };
+
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if (identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if (identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("HomePage");
+                    }
+                }
+                return RedirectToAction("Login");
+            }
+
+        }
+
         [HttpGet]
         public IActionResult EnrollUser()
         {
@@ -125,7 +215,7 @@ namespace WebUI.domain.Controllers
             ModelState.AddModelError(string.Empty, "Operation failed, try again!");
             return View();
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult EnrollCustomer()
         {
@@ -183,8 +273,7 @@ namespace WebUI.domain.Controllers
             }
             return View();
         }
-
-
+       
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
@@ -206,6 +295,7 @@ namespace WebUI.domain.Controllers
            end:
             return View(Tuple.Create(model,account,transactions));
         }
+        [Authorize]
         public async Task<IActionResult> ViewAll()
         {
             return View(await _userManager.Users.ToListAsync());
@@ -214,40 +304,40 @@ namespace WebUI.domain.Controllers
         {
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult DeleteUser()
         {
             return View();
-        }
+        }*/
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string Id)
         {
             try
             {
+                var user = await _userManager.FindByIdAsync(Id);
                 if (Id == null)
                 {
                     return RedirectToAction("DeleteUser");
                 }
-                if (Id != null)
+                else
                 {
-                    var user = await _userManager.FindByIdAsync(Id);
                     await _userManager.DeleteAsync(user);
                 }
                 return RedirectToAction("ViewAll");
             }
             catch (System.Exception)
             {
-                return RedirectToAction("DeleteRole");
+                return RedirectToAction("DeleteUser");
             }
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult UpdateUser(string Id)
         {
             return View();
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdateUser(UpdateViewModel model)
         {
@@ -256,6 +346,7 @@ namespace WebUI.domain.Controllers
             
             currentUserId.Email = model.Email;
             currentUserId.FullName = $"{model.FirstName} {model.LastName}";
+            currentUserId.PhoneNumber = model.PhoneNumber;
 
             await _userManager.UpdateAsync(currentUserId);
             return RedirectToAction("ViewAll");
@@ -286,10 +377,9 @@ namespace WebUI.domain.Controllers
                 Email = model.Email,
                 UserName = model.Email,
                 StillHasDefaultPassword = true,
-
             };
-            var randPassword = "Alex-1234";
-
+           var randPassword = "Alex-1234";
+           // var randPassword = PasswordGenerator.GeneratePassword(model.FullName[0], model.FullName[model.FullName.Length-1]);            
             var result = await _userManager.CreateAsync(user, randPassword);
             return (result, user);
         }

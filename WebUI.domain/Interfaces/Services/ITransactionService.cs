@@ -9,7 +9,7 @@ namespace WebUI.domain.Interfaces.Services
 {
     public interface ITransactionService
     {
-        public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows) Withdraw(WithdrawViewModel model);
+        public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows, bool willReduceBankMaintenanceFee) Withdraw(WithdrawViewModel model);
         public (
             bool isSenderAccountValid,
             bool isReciepientAccountValid,
@@ -18,7 +18,8 @@ namespace WebUI.domain.Interfaces.Services
             bool isReciepientAccountActive,
             bool isReciepientAccountDifferent,
             bool isReciepientCustomerExistent,
-            int affectedRows
+            int affectedRows,
+            bool willReduceBankMaintenanceFee
             ) Transfer(TransferViewModel model);
         public (bool isAccountValid, bool isAccountActive, int affectedRows) Deposit(DepositViewModel model);
         public IEnumerable<Transaction> GetAll();
