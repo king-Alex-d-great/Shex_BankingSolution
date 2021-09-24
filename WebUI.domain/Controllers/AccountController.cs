@@ -127,7 +127,7 @@ namespace WebUI.domain.Controllers
                 info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
             };
             if (result.Succeeded)
-                return View(userInfo);
+                return RedirectToAction("HomePage");
             else
             {
                 var user = new User
@@ -144,7 +144,7 @@ namespace WebUI.domain.Controllers
                     if(identityResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, false);
-                        return View(userInfo);
+                        return RedirectToAction("HomePage");
                     }
                 }
                 return RedirectToAction("Login");
@@ -272,6 +272,7 @@ namespace WebUI.domain.Controllers
             try
             {
                 var user = await _userManager.FindByIdAsync(Id);
+                _
                 if (Id == null)
                 {
                     return RedirectToAction("DeleteUser");
@@ -302,6 +303,7 @@ namespace WebUI.domain.Controllers
             
             currentUserId.Email = model.Email;
             currentUserId.FullName = $"{model.FirstName} {model.LastName}";
+            currentUserId.PhoneNumber = model.PhoneNumber;
 
             await _userManager.UpdateAsync(currentUserId);
             return RedirectToAction("ViewAll");
