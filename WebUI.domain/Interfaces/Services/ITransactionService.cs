@@ -18,7 +18,8 @@ namespace WebUI.domain.Interfaces.Services
             bool isReciepientAccountActive,
             bool isReciepientAccountDifferent,
             bool isReciepientCustomerExistent,
-            int affectedRows
+            int affectedRows,
+            bool willReduceBankMaintenanceFee
             ) Transfer(TransferViewModel model);
         public (bool isAccountValid, bool isAccountActive, int affectedRows) Deposit(DepositViewModel model);
         public IEnumerable<Transaction> GetAll();

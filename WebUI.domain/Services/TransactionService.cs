@@ -29,7 +29,6 @@ namespace WebUI.domain.Services
         {
             int affectedRows = 0;
             var account = _accountService.Get(model.customer.AccountId);
-
             var isAccountValid = account != null ? true : false;
             var isAccountActive = account?.IsActive != false ? true : false;
 
@@ -88,23 +87,29 @@ namespace WebUI.domain.Services
             return (isSenderAccountValid, isReciepientAccountValid, isBalanceSufficient, isSenderAccountActive, isReciepientAccountActive, isReciepientAccountDifferent,  isReciepientCustomerExistent,affectedRows);
  }
 
-        public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows) Withdraw(WithdrawViewModel model)
+        public (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows,bool willReduceBankMaintenanceFee) Withdraw(WithdrawViewModel model)
         {
             int affectedRows = 0;
             var account = _accountService.Get(model.customer.AccountId);
 
-            var isBalanceSufficient = account != null ? true : false;
-            var isAccountValid = account?.Balance > model?.Amount ? true : false;
-            var isAccountActive = account?.Balance > model?.Amount ? true : false;
+            var isBalanceSufficient = account != null;
+            var isAccountValid = account?.Balance > model?.Amount;
+            var isAccountActive = account?.Balance > model?.Amount;
+            bool willReduceBankMaintenanceFee = false;
 
-            if (isAccountValid == false || isBalanceSufficient == false || isAccountActive == false) goto end;
+            if (account.AccountType == AccountType.Savings && isBalanceSufficient)
+            {
+                willReduceBankMaintenanceFee = (account.Balance -= model.Amount) >= 5000;
+            }
+
+            if (isAccountValid == false || isBalanceSufficient == false || isAccountActive == false || willReduceBankMaintenanceFee == false) goto end;
 
             account.Balance -= model.Amount;
             var transaction = new Transaction { Amount = model.Amount, TimeStamp = System.DateTime.Now, TransactionMode = TransactionType.Debit, UserId = model?.customer?.UserId };
             _transactionRepo.Add(transaction);
             affectedRows = _unitOfWork.Commit();
             end:
-            return (isAccountValid, isBalanceSufficient, isAccountActive, affectedRows);
+            return (isAccountValid, isBalanceSufficient, isAccountActive, affectedRows, willReduceBankMaintenanceFee);
         }
 
         public IEnumerable<Transaction> GetAll()

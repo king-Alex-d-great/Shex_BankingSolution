@@ -1,11 +1,13 @@
 ﻿@using WebUI.domain.Model
+@using WebUI.domain.Middlewares
 @model List<User>
 
 @{
     ViewData["Title"] = "Index";
+    var roles = string.Join(',', User.GetUserRoles());
 }
 
-<h1  class="homePage-start">Users</h1>
+<h1 class="homePage-start">Users</h1>
 <div>
     <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollUser">Add User</a>
     <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollCustomer">Add Customer</a>
@@ -18,6 +20,7 @@
             <th>Id</th>
             <th>Username</th>
             <th>Full Name</th>
+            <th>Roles</th>
             <th>Email</th>
         </tr>
     </thead>
@@ -28,9 +31,10 @@
                 <td>@user.Id</td>
                 <td>@user.UserName</td>
                 <td>@user.FullName</td>
+                <td>@roles</td>
                 <td>@user.Email</td>
                 <td> <a asp-controller="Account" asp-action="UpdateUser" asp-route-id="@user.Id" class="btn btn-primary">Update </a>
-                   <td><a asp-controller="Account" asp-action="DeleteUser" class="btn text-danger">Delete</a></td>
+                <td><a asp-controller="Account" asp-action="DeleteUser" class="btn text-danger">Delete</a></td>
             </tr>
         }
     </tbody>

@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using OnlineBanking.Domain.Helpers.PasswordGenerator;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
@@ -20,6 +18,7 @@ using WebUI.domain.Models;
 
 namespace WebUI.domain.Controllers
 {
+
     public class AccountController : Controller
     {
 
@@ -39,7 +38,8 @@ namespace WebUI.domain.Controllers
             _accountService = accountService;
             _transactionService = transactionService;
         }
-
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpGet]
         public IActionResult Register()
         {
@@ -105,7 +105,7 @@ namespace WebUI.domain.Controllers
             ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             return View(model);
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult EnrollUser()
         {
@@ -125,7 +125,7 @@ namespace WebUI.domain.Controllers
             ModelState.AddModelError(string.Empty, "Operation failed, try again!");
             return View();
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult EnrollCustomer()
         {
@@ -183,8 +183,7 @@ namespace WebUI.domain.Controllers
             }
             return View();
         }
-
-
+       
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
@@ -206,6 +205,7 @@ namespace WebUI.domain.Controllers
            end:
             return View(Tuple.Create(model,account,transactions));
         }
+        [Authorize]
         public async Task<IActionResult> ViewAll()
         {
             return View(await _userManager.Users.ToListAsync());
@@ -214,7 +214,7 @@ namespace WebUI.domain.Controllers
         {
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult DeleteUser()
         {
@@ -241,13 +241,13 @@ namespace WebUI.domain.Controllers
                 return RedirectToAction("DeleteRole");
             }
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult UpdateUser(string Id)
         {
             return View();
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdateUser(UpdateViewModel model)
         {
@@ -286,10 +286,9 @@ namespace WebUI.domain.Controllers
                 Email = model.Email,
                 UserName = model.Email,
                 StillHasDefaultPassword = true,
-
             };
-            var randPassword = "Alex-1234";
-
+           var randPassword = "Alex-1234";
+           // var randPassword = PasswordGenerator.GeneratePassword(model.FullName[0], model.FullName[model.FullName.Length-1]);            
             var result = await _userManager.CreateAsync(user, randPassword);
             return (result, user);
         }

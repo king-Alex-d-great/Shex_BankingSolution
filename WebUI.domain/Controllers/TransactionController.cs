@@ -9,6 +9,7 @@ using WebUI.domain.Models.TransactionServiceModels;
 
 namespace WebUI.domain.Controllers
 {
+    [Authorize]
     public class TransactionController : Controller
     {
         private readonly UserManager<User> _userManager;
