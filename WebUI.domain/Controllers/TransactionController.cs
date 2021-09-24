@@ -18,7 +18,13 @@ namespace WebUI.domain.Controllers
         private readonly ICustomerService _customerService;
         private readonly ITransactionService _transactionService;
 
-        public TransactionController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager, ICustomerService customerService, ITransactionService transactionService)
+        public TransactionController(
+            UserManager<User> userManager, 
+            RoleManager<AppRole> roleManager,
+            SignInManager<User> signInManager, 
+            ICustomerService customerService, 
+            ITransactionService transactionService
+            )
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -74,17 +80,23 @@ namespace WebUI.domain.Controllers
                 model.customer = _customerService.GetCustomer(User.GetUserId());
                 //this page if authorized by roles, if user is not a customer cannot withdraw!
                 //redirect pr
-                var validation = _transactionService.Deposit(model);
+                var (success, msg) = _transactionService.DepositV2(model);
+                // var validation = _transactionService.Deposit(model);
+                //
+                // if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return RedirectToAction("HomePage", "Account"); }
+                // if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return RedirectToAction("HomePage", "Account"); }
+                // if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
 
-                if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return RedirectToAction("HomePage", "Account"); }
-                if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return RedirectToAction("HomePage", "Account"); }
-                if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
-
-                TempData["WithdrawSuccess"] = "Deposit Successful!";
-                return RedirectToAction("SuccessPage", "Transaction");
+                if (!success)
+                {
+                    ModelState.AddModelError(string.Empty, msg);
+                    return View();
+                }
+                TempData["WithdrawSuccess"] = msg;
+                return RedirectToAction("HomePage", "Account");
             } catch (Exception error)
             {
-                ModelState.AddModelError(String.Empty, error.Message);
+                ModelState.AddModelError(string.Empty, error.Message);
                 return View();
             }
         }
