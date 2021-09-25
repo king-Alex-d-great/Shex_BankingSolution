@@ -14,6 +14,8 @@ using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
 using WebUI.domain.Models;
 using System.Security.Claims;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -30,7 +32,10 @@ namespace WebUI.domain.Controllers
         private readonly IAccountService _accountService;
         private readonly ITransactionService _transactionService;
 
-        public AccountController(UserManager<User> userManager, RoleManager<AppRole> roleManager, SignInManager<User> signInManager, ICustomerService customerService, IAccountService accountService, ITransactionService transactionService)
+        public AccountController(UserManager<User> userManager,
+            RoleManager<AppRole> roleManager, SignInManager<User> signInManager,
+            ICustomerService customerService, IAccountService accountService, 
+            ITransactionService transactionService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -106,6 +111,7 @@ namespace WebUI.domain.Controllers
             ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             return View(model);
         }
+
 
         [AllowAnonymous]
         public IActionResult GoogleLogin()
@@ -262,7 +268,7 @@ namespace WebUI.domain.Controllers
                 var plainTextContent = "and easy to do anywhere, even with C#";
                 var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);*/
+                var response = await client.SendEmailAsync(msg);
 
                 return RedirectToAction("ViewAll");
 

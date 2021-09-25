@@ -40,7 +40,7 @@ namespace OnlineBanking.Domain.Entities
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "Shola-1234");                    
-                    await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());                    //await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
                 }
             }
         }
