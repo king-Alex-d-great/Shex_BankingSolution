@@ -309,7 +309,7 @@ namespace WebUI.domain.Controllers
         public IActionResult DeleteUser()
         {
             return View();
-        }*/
+        }
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string Id)
         {
@@ -351,8 +351,6 @@ namespace WebUI.domain.Controllers
             await _userManager.UpdateAsync(currentUserId);
             return RedirectToAction("ViewAll");
         }
-
-
 
         public async Task<(IdentityResult, User)> AddUser(AddUserViewModel model)
         {
