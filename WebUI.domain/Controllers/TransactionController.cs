@@ -45,26 +45,21 @@ namespace WebUI.domain.Controllers
                 if (!ModelState.IsValid) return View();
 
                 model.customer = _customerService.GetCustomer(User.GetUserId());
-                //this page if authorized by roles, if user is not a customer cannot withdraw!
-                //redirect pr
-                var validation = _transactionService.Withdraw(model);
-
-                if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return View(); }
-                if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return View(); }
-                if (validation.isBalanceSufficient == false) { ModelState.AddModelError(String.Empty, "Insufficient funds"); return View(); }
-                if (validation.willReduceBankMaintenanceFee == true) { ModelState.AddModelError(String.Empty, "Insufficient funds!A maintenance fee of $5000 is required for a savings account "); return View(); }
+                var (success, message) = _transactionService.Withdraw(model);
+                if (!success)
+                {
+                    ModelState.AddModelError(string.Empty, message);
+                    return View();
+                }
                 
-                if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
-                
-                TempData["WithdrawSuccess"] = "Withdrawal Successful!";
-                return RedirectToAction("SuccessPage", "Transaction");
+                TempData["WithdrawSuccess"] = message;
+                return RedirectToAction("HomePage", "Account");
             }
             catch (Exception error)
             {
                 ModelState.AddModelError(String.Empty, error.Message);
                 return View();
             }
-
         }
         public IActionResult Deposit()
         {
@@ -78,21 +73,10 @@ namespace WebUI.domain.Controllers
                 if (!ModelState.IsValid) return View();
 
                 model.customer = _customerService.GetCustomer(User.GetUserId());
-                //this page if authorized by roles, if user is not a customer cannot withdraw!
-                //redirect pr
-                var (success, msg) = _transactionService.DepositV2(model);
-                // var validation = _transactionService.Deposit(model);
-                //
-                // if (validation.isAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return RedirectToAction("HomePage", "Account"); }
-                // if (validation.isAccountActive == false) { ModelState.AddModelError(String.Empty, "This Account is inactive, Please visit the branch you opened your account for clarification"); return RedirectToAction("HomePage", "Account"); }
-                // if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
+                var (success, message) = _transactionService.Deposit(model);
+                if (!success) { ModelState.AddModelError(String.Empty, message); return View(); }
 
-                if (!success)
-                {
-                    ModelState.AddModelError(string.Empty, msg);
-                    return View();
-                }
-                TempData["WithdrawSuccess"] = msg;
+                TempData["DepositSuccess"] = message;
                 return RedirectToAction("HomePage", "Account");
             } catch (Exception error)
             {
@@ -113,24 +97,12 @@ namespace WebUI.domain.Controllers
                 if (!ModelState.IsValid) return View();
                 var userId = User.GetUserId();
                 model.customer = _customerService.GetCustomer(userId);
-                //this page if authorized by roles, if user is not a customer cannot withdraw!
-                //redirect pr
-                var validation = _transactionService.Transfer(model);
+                
+                var (success, message) = _transactionService.Transfer(model);
+                if (!success) { ModelState.AddModelError(String.Empty, message); return View(); }                
 
-                if (validation.isReciepientAccountValid == false) { ModelState.AddModelError(String.Empty, "Invalid Reciepient!"); return View(); }
-                if (validation.isSenderAccountValid == false) { ModelState.AddModelError(String.Empty, "Your Account is Invalid,Please visit the branch you opened your account for clarification "); return View(); }
-                if (validation.isSenderAccountActive == false) { ModelState.AddModelError(String.Empty, "Your Account has been deactivated, Please visit any of our branches for clarification"); return View(); }
-                if (validation.isReciepientAccountActive == false) { ModelState.AddModelError(String.Empty, "You cannot transfer to this Account, because it is either invalid or has been deactivated!"); return View(); ; }
-                if (validation.isBalanceSufficient == false) { ModelState.AddModelError(String.Empty, "Insuffiecient funds"); return View(); }
-                if (validation.willReduceBankMaintenanceFee == true) { ModelState.AddModelError(String.Empty, "Insufficient funds!A maintenance fee of $5000 is required for a savings account "); return View(); }
-
-                if (validation.isReciepientAccountDifferent == false) { ModelState.AddModelError(String.Empty, "You cannot transfer to yourself!"); return View(); }
-                if (validation.isReciepientCustomerExistent == false) { ModelState.AddModelError(String.Empty, "Recipient customer not found!"); return View(); }
-                if (validation.affectedRows < 1) { ModelState.AddModelError(String.Empty, "An error ocurred\ntransaction unsuccessful, Please try again"); return View(); }
-
-
-                TempData["TransferSuccess"] = "Transfer Successful!";
-                return RedirectToAction("SuccessPage", "Transaction");
+                TempData["TransferSuccess"] = message;
+                return RedirectToAction("HomePage", "Account");
             }
             catch (Exception error)
             {
@@ -146,8 +118,7 @@ namespace WebUI.domain.Controllers
         }
         [Authorize]
         public IActionResult SuccessPage()
-        {
-          
+        {          
             return View();
         }
     }

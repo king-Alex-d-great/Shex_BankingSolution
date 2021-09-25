@@ -14,6 +14,14 @@
                 {
                     <h1 class="text-danger">@TempData["WithdrawSuccess"]</h1>
                 }
+                @if (TempData["TransferSuccess"] != null)
+                {
+                    <h1 class="text-danger">@TempData["TransferSuccess"]</h1>
+                }
+                @if (TempData["DepositSuccess"] != null)
+                {
+                    <h1 class="text-danger">@TempData["DepositSuccess"]</h1>
+                }
                 <h1 class="text-black mt-5 mb-5">Welcome back, <b>@Model.Item1?.FullName</b></h1>
             </div>
         </div>

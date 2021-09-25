@@ -9,22 +9,11 @@ namespace WebUI.domain.Interfaces.Services
 {
     public interface ITransactionService
     {
-        (bool isAccountValid, bool isBalanceSufficient, bool isAccountActive, int affectedRows, bool willReduceBankMaintenanceFee) Withdraw(WithdrawViewModel model);
-
-        (
-            bool isSenderAccountValid,
-            bool isReciepientAccountValid,
-            bool isBalanceSufficient,
-            bool isSenderAccountActive,
-            bool isReciepientAccountActive,
-            bool isReciepientAccountDifferent,
-            bool isReciepientCustomerExistent,
-            int affectedRows,
-            bool willReduceBankMaintenanceFee
-            ) Transfer(TransferViewModel model);
-        (bool isAccountValid, bool isAccountActive, int affectedRows) Deposit(DepositViewModel model);
-
-        (bool success, string message) DepositV2(DepositViewModel model);
+        
+        
+        public (bool success, string message) Withdraw(WithdrawViewModel model);
+        (bool success, string message) Deposit (DepositViewModel model);
+        (bool success, string message) Transfer (TransferViewModel model);
         public IEnumerable<Transaction> GetAll();
     }
 }

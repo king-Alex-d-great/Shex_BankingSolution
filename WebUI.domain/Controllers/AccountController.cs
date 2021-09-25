@@ -260,7 +260,7 @@ namespace WebUI.domain.Controllers
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
                 //Send Mail To User With Credentials
-                /*var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+               var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
                 var client = new SendGridClient(apiKey);                
               var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
                 var subject = "Sending with SendGrid is Fun";
