@@ -16,7 +16,7 @@
         <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="HomePage">Home</a>
     </li>
     <li class="scroll-to-section">
-        <a id="manage" class="nav-link text-dark" title="Manage">Hello! (@roles)</a>
+        <a asp-controller="Account" asp-action="Manage" class="nav-link text-dark" title="Manage">Hello! (@roles)</a>
     </li>
 
     <form  class="logout-form"asp-controller="Account" asp-action="LogOut" asp-route-returnUrl="@Url.Action("Index", "Home")">

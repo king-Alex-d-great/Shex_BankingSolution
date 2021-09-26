@@ -42,8 +42,11 @@ namespace WebUI.domain.Services
             {
                 Amount = model.Amount,
                 TimeStamp = DateTime.Now,
-                TransactionMode = TransactionType.Credit,
-                UserId = model.customer.UserId
+                TransactionMode = TransactionMode.Credit,
+                TransactionType = TransactionType.Deposit,
+                UserId = model.customer.UserId,
+                ReceiverAccount = account.AccountNumber,
+                SenderAccount = account.AccountNumber
             };
             _transactionRepo.Add(transaction);
 
@@ -78,8 +81,25 @@ namespace WebUI.domain.Services
 
             senderAccount.Balance -= model.Amount;
             reciepientAccount.Balance += model.Amount;
-            var senderTransaction = new Transaction { Amount = model.Amount, TimeStamp = DateTime.Now, TransactionMode = TransactionType.Debit, UserId = model.customer.UserId };
-            var reciepientTransaction = new Transaction { Amount = model.Amount, TimeStamp = DateTime.Now, TransactionMode = TransactionType.Credit, UserId = receipientCustomerAccount.UserId };
+               
+            var senderTransaction = new Transaction { 
+                Amount = model.Amount, 
+                TimeStamp = DateTime.Now,
+                TransactionMode = TransactionMode.Debit,
+                UserId = model.customer.UserId, 
+                TransactionType = TransactionType.Transfer,
+                ReceiverAccount = reciepientAccount.AccountNumber,
+                SenderAccount = senderAccount.AccountNumber 
+            };
+            var reciepientTransaction = new Transaction { 
+                Amount = model.Amount, 
+                TimeStamp = DateTime.Now,
+                TransactionMode = TransactionMode.Credit,
+                UserId = receipientCustomerAccount.UserId,
+                TransactionType = TransactionType.Transfer,
+                ReceiverAccount = reciepientAccount.AccountNumber,
+                SenderAccount = senderAccount.AccountNumber
+            };
             _transactionRepo.Add(senderTransaction);
             _transactionRepo.Add(reciepientTransaction);
             var affectedRows = _unitOfWork.Commit();
@@ -102,7 +122,7 @@ namespace WebUI.domain.Services
 
             if (!string.IsNullOrEmpty(msg)) return (false, msg);
             account.Balance -= model.Amount;
-            var transaction = new Transaction { Amount = model.Amount, TimeStamp = System.DateTime.Now, TransactionMode = TransactionType.Debit, UserId = model?.customer?.UserId };
+            var transaction = new Transaction { Amount = model.Amount, TimeStamp = System.DateTime.Now, TransactionMode = TransactionMode.Debit, UserId = model?.customer?.UserId , TransactionType = TransactionType.Withdrawal , ReceiverAccount = account.AccountNumber, SenderAccount = account.AccountNumber};
             _transactionRepo.Add(transaction);
             var affectedRows = _unitOfWork.Commit();
             return affectedRows > 0 ? (true, "Your Withdrawal was successful") : (false, "An error ocurred\nWithdrawal unsuccessful, Please try again");
@@ -111,6 +131,11 @@ namespace WebUI.domain.Services
         public IEnumerable<Transaction> GetAll()
         {
             return _transactionRepo.GetAll();
+        }
+
+        public IEnumerable<Transaction> GetForSpecificUser(string UserId)
+        {
+            return _transactionRepo.Find(a => a.UserId == UserId);
         }
     }
 }

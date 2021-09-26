@@ -9,6 +9,7 @@ using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
 using OnlineBanking.Domain.Helpers.AccountGenerator;
 using OnlineBanking.Domain.Helpers.AgeManager;
+using WebUI.domain.Models.AccountControllerModels;
 
 namespace WebUI.domain.Services
 {
@@ -69,6 +70,6 @@ namespace WebUI.domain.Services
         public Customer GetCustomerWithAccount(string accountId)
         {
             return _customerRepo.Find(a => a.AccountId.ToString() == accountId).FirstOrDefault();
-        }
+        }       
     }
 }

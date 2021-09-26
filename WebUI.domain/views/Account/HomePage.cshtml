@@ -2,8 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<User>  userManager
 @{
-    ViewData["Title"] = "Home Page";
-
+    ViewData["Title"] = "Home Page";  
 }
 
 <div class="homePage-start">
@@ -137,7 +136,7 @@
         <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Transfer">Transfer</a>
         <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Withdraw">Withdraw</a>
         <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Deposit">Deposit</a>
-        <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="Index">Transaction History</a>
+        <a class="btn btn-primary text-center" asp-controller="Transaction" asp-action="TransactionHistory">Transaction History</a>
     </h1>
 </section>
 
@@ -147,24 +146,30 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
+                    
                     <th scope="col">STATUS</th>
                     <th scope="col">TYPE</th>
+                    <th scope="col">MODE</th>
                     <th scope="col">Amount</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
                     <th scope="col">Date</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model?.Item3)
+                @foreach (var item in Model?.Item3.Take(5))
                 {
                     <tr>
-                        <th scope="row"><b>@item?.Id</b></th>
+                        
                         <td>
                             <div class="tm-status-circle moving">
                             </div>Successful
                         </td>
+                        <td><b>@item?.TransactionType</b></td>
                         <td><b>@item?.TransactionMode</b></td>
                         <td><b>@item?.Amount</b></td>
+                        <td><b>@item?.SenderAccount</b></td>
+                        <td><b>@item?.ReceiverAccount</b></td>
                         <td><b>@item?.TimeStamp</b></td>
                     </tr>
                 }

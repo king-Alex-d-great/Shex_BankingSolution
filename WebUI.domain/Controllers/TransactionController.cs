@@ -113,13 +113,10 @@ namespace WebUI.domain.Controllers
 
         public IActionResult TransactionHistory()
         {
-           var transactions = _transactionService.GetAll();
-            return View();
-        }
-        [Authorize]
-        public IActionResult SuccessPage()
-        {          
-            return View();
-        }
+          // var transactions = _transactionService.GetAll();
+           var Transactions = _transactionService.GetForSpecificUser(User.GetUserId());
+            return View(Transactions);
+        }     
+       
     }
 }

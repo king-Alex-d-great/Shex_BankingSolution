@@ -1,10 +1,8 @@
-﻿@using WebUI.domain.Model
-@using WebUI.domain.Middlewares
-@model List<User>
+﻿@using WebUI.domain.Middlewares
+@model List<WebUI.domain.Models.AccountControllerModels.UserRoleViewModel>
 
 @{
     ViewData["Title"] = "Index";
-    var roles = string.Join(',', User.GetUserRoles());
 }
 
 <h1 class="homePage-start">Users</h1>
@@ -12,7 +10,6 @@
     <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollUser">Add User</a>
     <a class="btn btn-primary" asp-controller="Account" asp-action="EnrollCustomer">Add Customer</a>
 </div>
-
 
 <table class="table table-striped">
     <thead>
@@ -27,17 +24,23 @@
     <tbody>
         @foreach (var user in Model)
         {
-            <tr>
-                <td>@user.Id</td>
-                <td>@user.UserName</td>
-                <td>@user.FullName</td>
-                <td>@roles</td>
-                <td>@user.Email</td>
-<form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
-                <td> <a asp-controller="Account" asp-action="UpdateUser" asp-route-id="@user.Id" class="btn btn-primary">Update </a>
-                <td><button type="submit" class="btn text-danger">Delete</button></td>
-                </form>
-            </tr>
-            }
-        </tbody>
-    </table>
+        <tr>
+            <td>@user.UserId</td>
+            <td>@user.UserName</td>
+            <td>@user.FullName</td>
+            <td>
+                @string.Join(',', user.Roles.ToList());
+            </td>
+            <td>@user.Email</td>
+
+            <td>
+                <a class="btn btn-primary" asp-controller="Role" asp-action="ManageUserRole" asp-route-userId="@user.UserId">Manage Roles</a>
+            </td>
+            <form method="post" asp-action="DeleteUser" asp-route-id="@user.UserId">
+            <td> <a asp-controller="Account" asp-action="UpdateUser" asp-route-id="@user.UserId" class="btn btn-primary">Update </a> </td>
+            <td><button type="submit" class="btn text-danger">Delete</button></td>
+            </form>
+        </tr>
+        }
+    </tbody>
+</table>

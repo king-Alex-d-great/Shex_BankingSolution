@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Transaction>
+@{
+    ViewData["Title"] = "Transaction History";
+}
+
+<div class="homePage-start">
+    <h2 class="tm-block-title">Transaction List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+
+                <th scope="col">STATUS</th>
+                <th scope="col">TYPE</th>
+                <th scope="col">MODE</th>
+                <th scope="col">Amount</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+
+                <td>
+                    <div class="tm-status-circle moving">
+                    </div>Successful
+                </td>
+                <td><b>@item?.TransactionType</b></td>
+                <td><b>@item?.TransactionMode</b></td>
+                <td><b>@item?.Amount</b></td>
+                <td><b>@item?.SenderAccount</b></td>
+                <td><b>@item?.ReceiverAccount</b></td>
+                <td><b>@item?.TimeStamp</b></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+    <div class="row">
+        <div class="col">
+            <img src="~/images/Fintech-image.png" class="" alt="ShEx" />
+        </div>
+        <div class="col">
+
+            @if (TempData["WithdrawSuccess"] != null)
+            {
+                <h1>@TempData["WithdrawSuccess"]</h1>
+            }
+
+        </div>
+    </div>
+</div>

@@ -59,8 +59,9 @@
             <td>@role.Name</td>
             <td>@role.CreatedAt</td>
             <td>@role.CreatedBy</td>
-                <td><a asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Name" class="btn btn-info">Update</a></td>
-                <td><a asp-controller="Role" asp-action="DeleteRole" class="btn btn-info" asp-route-id="@role.Name">Delete</a></td>
+            <td><a asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Name" class="btn btn-info">Update</a></td>
+            <td><a asp-controller="Role" asp-action="DeleteRole" class="btn btn-info" asp-route-id="@role.Name">Delete</a></td>
+            
         </tr>
         }
     </tbody>

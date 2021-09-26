@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -8,14 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
-using OnlineBanking.Domain.Helpers.PasswordGenerator;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
 using WebUI.domain.Models;
-using System.Security.Claims;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using WebUI.domain.Models.AccountControllerModels;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -34,7 +32,7 @@ namespace WebUI.domain.Controllers
 
         public AccountController(UserManager<User> userManager,
             RoleManager<AppRole> roleManager, SignInManager<User> signInManager,
-            ICustomerService customerService, IAccountService accountService, 
+            ICustomerService customerService, IAccountService accountService,
             ITransactionService transactionService)
         {
             _userManager = userManager;
@@ -92,26 +90,51 @@ namespace WebUI.domain.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-
+        /*
+                [HttpPost]
+                public async Task<IActionResult> LogIn(LoginViewModel model)
+                {
+                    if (ModelState.IsValid)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
+                        if (result.Succeeded)
+                        {
+                            var user = await _userManager.FindByNameAsync(model.Email);
+                            return RedirectToAction("HomePage");
+                        }
+                    }
+                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                    return View(model);
+                }*/
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
 
-            if (ModelState.IsValid)
-            {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
-                if (result.Succeeded)
-                {
-                    var user = await _userManager.FindByNameAsync(model.Email);
+            if (!ModelState.IsValid) { ModelState.AddModelError(string.Empty, "Invalid Login Attempt"); return View(model); }
 
-                    return RedirectToAction("HomePage");
-                }
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
+            if (!result.Succeeded) { ModelState.AddModelError(string.Empty, "Invalid Login Attempt"); return View(model); }
 
-            }
-            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
-            return View(model);
+            var user = await _userManager.FindByNameAsync(model.Email);
+            if (user.StillHasDefaultPassword) return RedirectToAction("ChangeDefaultPassword");
+            return RedirectToAction("HomePage");
         }
-
+        public IActionResult ChangeDefaultPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeDefaultPassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid) return View();
+            var user = await _userManager.FindByIdAsync(User.GetUserId());
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!changePasswordResult.Succeeded) { ModelState.AddModelError(string.Empty, "Password Reset failed, Please try again!"); return View(); }
+            user.StillHasDefaultPassword = false;
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded) { ModelState.AddModelError(string.Empty, "An error occured, Please try again!"); return View(); }
+            return RedirectToAction("HomePage");
+        }
 
         [AllowAnonymous]
         public IActionResult GoogleLogin()
@@ -144,10 +167,10 @@ namespace WebUI.domain.Controllers
                 };
 
                 IdentityResult identityResult = await _userManager.CreateAsync(user);
-                if(identityResult.Succeeded)
+                if (identityResult.Succeeded)
                 {
                     identityResult = await _userManager.AddLoginAsync(user, info);
-                    if(identityResult.Succeeded)
+                    if (identityResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, false);
                         return RedirectToAction("HomePage");
@@ -247,7 +270,7 @@ namespace WebUI.domain.Controllers
                     UserId = user.Id,
                     CreatedBy = User.GetUserName(),
                     CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now, 
+                    UpdatedAt = DateTime.Now,
                 };
                 await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
                 var customerAddReport = _customerService.Add(model);
@@ -260,15 +283,15 @@ namespace WebUI.domain.Controllers
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
                 //Send Mail To User With Credentials
-               var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
-                var client = new SendGridClient(apiKey);                
-              var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
+                /*var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                var client = new SendGridClient(apiKey);
+                var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
                 var subject = "Sending with SendGrid is Fun";
                 var to = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
                 var plainTextContent = "and easy to do anywhere, even with C#";
                 var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);
+                var response = await client.SendEmailAsync(msg);*/
 
                 return RedirectToAction("ViewAll");
 
@@ -279,7 +302,7 @@ namespace WebUI.domain.Controllers
             }
             return View();
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
@@ -291,21 +314,21 @@ namespace WebUI.domain.Controllers
         [Authorize]
         public async Task<IActionResult> HomePage()
         {
-            Account account = null; 
+            Account account = null;
             var model = await _userManager.FindByIdAsync(User.GetUserId());
             var customer = _customerService.GetCustomer(model.Id);
-            var transactions = _transactionService.GetAll();
+            var transactions = _transactionService.GetForSpecificUser(User.GetUserId());
             if (customer == null) goto end;
             account = _accountService.Get(customer.AccountId);
-        
-           end:
-            return View(Tuple.Create(model,account,transactions));
+
+        end:
+            return View(Tuple.Create(model, account, transactions));
         }
-        [Authorize]
-        public async Task<IActionResult> ViewAll()
+        /*[Authorize]*/
+        /*public async Task<IActionResult> ViewAll()
         {
             return View(await _userManager.Users.ToListAsync());
-        }
+        }*/
         private async Task<List<string>> GetUserRoles(User user)
         {
             return new List<string>(await _userManager.GetRolesAsync(user));
@@ -349,7 +372,7 @@ namespace WebUI.domain.Controllers
         {
 
             var currentUserId = await _userManager.FindByIdAsync(model.Id);
-            
+
             currentUserId.Email = model.Email;
             currentUserId.FullName = $"{model.FirstName} {model.LastName}";
             currentUserId.PhoneNumber = model.PhoneNumber;
@@ -374,7 +397,6 @@ namespace WebUI.domain.Controllers
 
         private async Task<(IdentityResult result, User user)> AddUserAsync(IdentityViewModel model)
         {
-
             var user = new User
             {
                 FullName = model.FullName,
@@ -382,12 +404,35 @@ namespace WebUI.domain.Controllers
                 UserName = model.Email,
                 StillHasDefaultPassword = true,
             };
-           var randPassword = "Alex-1234";
-           // var randPassword = PasswordGenerator.GeneratePassword(model.FullName[0], model.FullName[model.FullName.Length-1]);            
+            var randPassword = "Alex-1234";
+            // var randPassword = PasswordGenerator.GeneratePassword(model.FullName[0], model.FullName[model.FullName.Length-1]);            
             var result = await _userManager.CreateAsync(user, randPassword);
             return (result, user);
         }
+        [Authorize]
+        public async Task<IActionResult> ViewAll()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userRoleModels = new List<UserRoleViewModel>();
 
-        
+            foreach (var user in users)
+            {
+                var userRoleModel = new UserRoleViewModel()
+                {
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    UserId = user.Id,
+                    Roles = await GetUserRoles(user)
+                };
+                userRoleModels.Add(userRoleModel);
+            }
+            return View(userRoleModels);
+        }
+
+        public IActionResult ManageAccount()
+        {
+            return View();
+        }
     }
 }
