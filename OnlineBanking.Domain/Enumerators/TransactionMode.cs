@@ -4,10 +4,9 @@ using System.Text;
 
 namespace OnlineBanking.Domain.Enumerators
 {
-    public enum TransactionType
+    public enum TransactionMode
     {
-        Deposit = 1,
-        Withdrawal,
-        Transfer
+       Credit = 1,
+       Debit        
     }
 }
