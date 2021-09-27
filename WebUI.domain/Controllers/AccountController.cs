@@ -193,20 +193,32 @@ namespace WebUI.domain.Controllers
             if (info == null)
                 return RedirectToAction("Login");
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            var user = await _userManager.FindByEmailAsync(info.Principal.FindFirst(ClaimTypes.Email).Value);
             string[] userInfo =
             {
                 info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value
             };
-            if (result.Succeeded)
+            if (user.Email == userInfo[1])
+            {
+                await _signInManager.SignInAsync(user, false);
+               
+            }
+                
+            else
+            {
+                return RedirectToAction("Login");
+            }
+            return RedirectToAction("HomePage");
+            /*if (result.Succeeded)
                 return RedirectToAction("HomePage");
             else
             {
-                var user = new User
+                *//*var user = new User
                 {
                     Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
                     UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
                     FullName = info.Principal.FindFirst(ClaimTypes.Name).Value
-                };
+                };*//*
 
                 IdentityResult identityResult = await _userManager.CreateAsync(user);
                 if (identityResult.Succeeded)
@@ -219,7 +231,7 @@ namespace WebUI.domain.Controllers
                     }
                 }
                 return RedirectToAction("Login");
-            }
+            }*/
 
         }
 
