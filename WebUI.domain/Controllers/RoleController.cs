@@ -98,13 +98,13 @@ namespace WebUI.domain.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public async Task<IActionResult> ManageUserRole(string userId)
+        public async Task<IActionResult> ManageUserRole(string data)
         {
-            ViewBag.userId = userId;
-            var user = await _userManager.FindByIdAsync(userId);
+            ViewBag.data = data;
+            var user = await _userManager.FindByIdAsync(data);
             if (user == null)
             {
-                ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+                ViewBag.ErrorMessage = $"User with Id = {data} cannot be found";
                 return View("NotFound");
             }        
             ViewBag.UserName = user.UserName;
@@ -129,9 +129,9 @@ namespace WebUI.domain.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> ManageUserRole(List<ManageUserRolesViewModel> model, string userId)
+        public async Task<IActionResult> ManageUserRole(List<ManageUserRolesViewModel> model, string data)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(data);
             if (user == null)
             {
                 return View();
@@ -140,10 +140,8 @@ namespace WebUI.domain.Controllers
             var result = await _userManager.RemoveFromRolesAsync(user, roles);
             if (!result.Succeeded)
             {
-
                 ModelState.AddModelError("", "Cannot remove user existing roles");
                 return View(model);
-
             }
             result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName));
             if (!result.Succeeded)

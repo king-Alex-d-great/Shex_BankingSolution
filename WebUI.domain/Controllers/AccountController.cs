@@ -15,14 +15,10 @@ using WebUI.domain.Model;
 using WebUI.domain.Models;
 using WebUI.domain.Models.AccountControllerModels;
 
-/*using OnlineBanking.Domain.Enumerators;*/
-
 namespace WebUI.domain.Controllers
 {
-
     public class AccountController : Controller
     {
-
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
@@ -41,7 +37,8 @@ namespace WebUI.domain.Controllers
             _customerService = customerService;
             _accountService = accountService;
             _transactionService = transactionService;
-        }
+        } 
+
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpGet]
@@ -90,6 +87,7 @@ namespace WebUI.domain.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
+
         /*
                 [HttpPost]
                 public async Task<IActionResult> LogIn(LoginViewModel model)
@@ -106,10 +104,10 @@ namespace WebUI.domain.Controllers
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                     return View(model);
                 }*/
+
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
-
             if (!ModelState.IsValid) { ModelState.AddModelError(string.Empty, "Invalid Login Attempt"); return View(model); }
 
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
