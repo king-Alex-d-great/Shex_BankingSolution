@@ -1,8 +1,8 @@
-﻿@model Tuple<User, Account, IEnumerable<Transaction>>
+﻿@model Tuple<User, Account, List<Transaction>>
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<User>  userManager
 @{
-    ViewData["Title"] = "Home Page";  
+    ViewData["Title"] = "Home Page";   
 }
 
 <div class="homePage-start">
@@ -145,8 +145,7 @@
         <h2 class="tm-block-title">Transaction List</h2>
         <table class="table">
             <thead>
-                <tr>
-                    
+                <tr>                    
                     <th scope="col">STATUS</th>
                     <th scope="col">TYPE</th>
                     <th scope="col">MODE</th>
@@ -157,22 +156,38 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model?.Item3.Take(5))
-                {
+                @* @foreach (var item in Model?.Item3.Take(5))
+        {
+            <tr>
+
+                <td>
+                    <div class="tm-status-circle moving">
+                    </div>Successful
+                </td>
+                <td><b>@item?.TransactionType</b></td>
+                <td><b>@item?.TransactionMode</b></td>
+                <td><b>@item?.Amount</b></td>
+                <td><b>@item?.SenderAccount</b></td>
+                <td><b>@item?.ReceiverAccount</b></td>
+                <td><b>@item?.TimeStamp</b></td>
+            </tr>
+        }*@
+
+                @for (var i = Model.Item3.Count - 1; i >= 0; i--)               
+                 {
                     <tr>
-                        
                         <td>
                             <div class="tm-status-circle moving">
                             </div>Successful
                         </td>
-                        <td><b>@item?.TransactionType</b></td>
-                        <td><b>@item?.TransactionMode</b></td>
-                        <td><b>@item?.Amount</b></td>
-                        <td><b>@item?.SenderAccount</b></td>
-                        <td><b>@item?.ReceiverAccount</b></td>
-                        <td><b>@item?.TimeStamp</b></td>
-                    </tr>
-                }
+                        <td><b>@Model.Item3[i].TransactionType</b></td>
+                        <td><b>@Model.Item3[i].TransactionMode</b></td>
+                        <td><b>@Model.Item3[i].Amount</b></td>
+                        <td><b>@Model.Item3[i].SenderAccount</b></td>
+                        <td><b>@Model.Item3[i].ReceiverAccount</b></td>
+                        <td><b>@Model.Item3[i].TimeStamp</b></td>
+                    </tr>                     
+                 }
             </tbody>
         </table>
     </div>

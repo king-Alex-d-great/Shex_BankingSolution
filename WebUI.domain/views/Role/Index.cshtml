@@ -16,31 +16,6 @@
     </div>
 </form>
 
-@*@foreach (var role in Model)
-	{
-<div class="card mb-3">
-    <div class="card-header">
-        Id : @role.Id
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Role: @role.Name</h5>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Date Created: @role.CreatedAt</h5>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Created By: @role.CreatedBy</h5>
-    </div>
-    <div class="card-footer">
-        <form asp-action="DeleteRole" asp-controller="Role" method="post">
-            <a asp-controller="Role" asp-action="UpdateRole" asp-route-id="@role.Id" class="btn btn-info">Update</a>
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete role : @role.Name')">Delete</button>
-        </form>
-    </div>
-</div>
-		 
-	}*@
-
 
 <table class="table table-striped">
     <thead>
