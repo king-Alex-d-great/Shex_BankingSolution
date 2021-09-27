@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -37,7 +38,7 @@ namespace WebUI.domain.Controllers
             _customerService = customerService;
             _accountService = accountService;
             _transactionService = transactionService;
-        } 
+        }
 
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -87,24 +88,7 @@ namespace WebUI.domain.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-
-        /*
-                [HttpPost]
-                public async Task<IActionResult> LogIn(LoginViewModel model)
-                {
-                    if (ModelState.IsValid)
-                    {
-                        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
-                        if (result.Succeeded)
-                        {
-                            var user = await _userManager.FindByNameAsync(model.Email);
-                            return RedirectToAction("HomePage");
-                        }
-                    }
-                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
-                    return View(model);
-                }*/
-
+       
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
@@ -201,9 +185,9 @@ namespace WebUI.domain.Controllers
             if (user.Email == userInfo[1])
             {
                 await _signInManager.SignInAsync(user, false);
-               
+
             }
-                
+
             else
             {
                 return RedirectToAction("Login");
@@ -254,6 +238,7 @@ namespace WebUI.domain.Controllers
             ModelState.AddModelError(string.Empty, "Operation failed, try again!");
             return View();
         }
+
         [Authorize]
         [HttpGet]
         public IActionResult EnrollCustomer()
@@ -283,14 +268,16 @@ namespace WebUI.domain.Controllers
                     UpdatedAt = DateTime.Now,
                 };
                 await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
-                var customerAddReport = _customerService.Add(model);
+                var (success, message) = _customerService.Add(model);
 
-                if (customerAddReport.isAgeLessThanMaximumAge == false) { ModelState.AddModelError(string.Empty, "A person above age 100 cannot be a customer!"); return View(); }
-                if (customerAddReport.isAgeMoreThanMinimumAge == false) { ModelState.AddModelError(string.Empty, "A Person must be at least one year old to have an account!"); return View(); }
-                if (customerAddReport.AffectedRows < 0) { ModelState.AddModelError(string.Empty, "Operation failed, please try again!"); return View(); }
+                if (!success) {
+                    var newUser = await _userManager.FindByNameAsync(model.Email);
+                    await _userManager.DeleteAsync(newUser);
+                    ModelState.AddModelError(string.Empty, message);
+                    return View(); 
+                }
 
-
-                TempData["EnrollSuccess"] = "Enrollment Was Successful!";
+                TempData["EnrollSuccess"] = message;
 
                 //Send Mail To User With Credentials
                 /*var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
@@ -328,17 +315,14 @@ namespace WebUI.domain.Controllers
             var model = await _userManager.FindByIdAsync(User.GetUserId());
             var customer = _customerService.GetCustomer(model.Id);
             var transactions = _transactionService.GetForSpecificUser(User.GetUserId());
+            var transactionList = transactions.Skip(transactions.Count() - 5).ToList();
             if (customer == null) goto end;
             account = _accountService.Get(customer.AccountId);
 
         end:
-            return View(Tuple.Create(model, account, transactions));
+            return View(Tuple.Create(model, account, transactionList));
         }
-        /*[Authorize]*/
-        /*public async Task<IActionResult> ViewAll()
-        {
-            return View(await _userManager.Users.ToListAsync());
-        }*/
+       
         private async Task<List<string>> GetUserRoles(User user)
         {
             return new List<string>(await _userManager.GetRolesAsync(user));
