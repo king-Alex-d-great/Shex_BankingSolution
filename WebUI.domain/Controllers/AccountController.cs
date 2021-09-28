@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -357,9 +358,18 @@ namespace WebUI.domain.Controllers
         }
         [Authorize]
         [HttpGet]
-        public IActionResult UpdateUser(string Id)
+        public async Task<IActionResult> UpdateUser(string Id)
         {
-            return View();
+            var user = await _userManager.FindByIdAsync(Id);
+            var updatemodel = new UpdateViewModel
+            {
+
+                FirstName = user.FullName.Split(' ')[0],
+                LastName = user.FullName.Split(' ')[1],
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture
+            };       
+            return View(updatemodel);
         }
         [Authorize]
         [HttpPost]
