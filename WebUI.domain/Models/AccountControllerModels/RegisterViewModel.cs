@@ -13,22 +13,16 @@ namespace WebUI.domain.Model {
 
         [Required(ErrorMessage = "Specify account type")]
         public AccountType AccountType { get; set; }      
-        public AccountType AccountTypeTwo { get; set; } = AccountType.Student;        
-        
+        public AccountType AccountTypeTwo { get; set; } = AccountType.Student; 
         [Required(ErrorMessage = "Email required, this will serve as your username")]
-
         public string Email { get; set; }
         [Required(ErrorMessage = "Password required")]
-
         public string Password { get; set; }
         [Required(ErrorMessage = "Confirm password to proceed")]
-
         public string ConfirmPassword { get; set; }
         [Required(ErrorMessage = "First name required")]
-
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Last name required")]
-
         public string LastName { get; set; }        
         
         public string AccountNumber { get; set; }

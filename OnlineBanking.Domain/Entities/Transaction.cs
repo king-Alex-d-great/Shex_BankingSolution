@@ -12,9 +12,13 @@ namespace OnlineBanking.Domain.Entities
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
-        public TransactionType TransactionMode { get; set; }
+        public TransactionMode TransactionMode { get; set; }
+        public TransactionType TransactionType { get; set; }
         [Column(TypeName = "decimal(38,2)")]
         public decimal Amount { get; set; }
         public DateTime TimeStamp { get; set; }
+        public bool IsSuccessful { get; set; }
+        public string SenderAccount { get; set; }
+        public string ReceiverAccount{ get; set; }
     }
 }

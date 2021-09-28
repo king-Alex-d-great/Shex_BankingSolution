@@ -9,6 +9,7 @@ using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Model;
 using OnlineBanking.Domain.Helpers.AccountGenerator;
 using OnlineBanking.Domain.Helpers.AgeManager;
+using WebUI.domain.Models.AccountControllerModels;
 
 namespace WebUI.domain.Services
 {
@@ -29,12 +30,16 @@ namespace WebUI.domain.Services
             int? result = _unitOfWork.Commit();
             return result;
         }
-        public (bool isAgeMoreThanMinimumAge, bool isAgeLessThanMaximumAge, int AffectedRows) Add (EnrollCustomerViewModel enrollModel)
-        {
-            int AffectedRows = default;
-            var isAgeValid = AgeValidator.isAgeValid(enrollModel.Birthday.Value);
-            if (isAgeValid.isAgeMaximumAge == false || isAgeValid.isAgeMinimumAge == false) goto end;
+        
 
+        public (bool success, string msg) Add(EnrollCustomerViewModel enrollModel)
+        {
+           // int AffectedRows = default;
+            var isAgeValid = AgeValidator.isAgeValid(enrollModel.Birthday.Value);
+            if (!isAgeValid.isAgeMaximumAge || !isAgeValid.isAgeMinimumAge) {
+                var msg = !isAgeValid.isAgeMaximumAge ?"A person above age 100 cannot be a customer!" : "A Person must be at least one year old to have an account!";
+                return (false, msg);
+            }
             var customer = new Customer
             {
                 UserId = enrollModel.ReadOnlyCustomerProps.UserId,
@@ -52,9 +57,9 @@ namespace WebUI.domain.Services
                 },
             };
             _customerRepo.Add(customer);
-            AffectedRows = _unitOfWork.Commit();
-        end:
-            return (isAgeValid.isAgeMinimumAge, isAgeValid.isAgeMaximumAge, AffectedRows);
+            var AffectedRows = _unitOfWork.Commit();
+      
+            return AffectedRows > 0 ? (true, "Customer Added Successfully") : (false, "An error occured, please try again! ");
         }
         public Customer GetCustomer(string userId)
         {
@@ -69,6 +74,6 @@ namespace WebUI.domain.Services
         public Customer GetCustomerWithAccount(string accountId)
         {
             return _customerRepo.Find(a => a.AccountId.ToString() == accountId).FirstOrDefault();
-        }
+        }       
     }
 }
