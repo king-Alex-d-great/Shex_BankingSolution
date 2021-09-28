@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using OnlineBanking.Domain.Enumerators;
-using OnlineBanking.Domain.Helpers.PasswordGenerator;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Middlewares;
 using WebUI.domain.Model;
 using WebUI.domain.Models;
-using System.Security.Claims;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 
 /*using OnlineBanking.Domain.Enumerators;*/
 
@@ -34,7 +36,7 @@ namespace WebUI.domain.Controllers
 
         public AccountController(UserManager<User> userManager,
             RoleManager<AppRole> roleManager, SignInManager<User> signInManager,
-            ICustomerService customerService, IAccountService accountService, 
+            ICustomerService customerService, IAccountService accountService,
             ITransactionService transactionService)
         {
             _userManager = userManager;
@@ -99,7 +101,7 @@ namespace WebUI.domain.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email,model.Password, isPersistent: model.RememberMe, false);
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(model.Email);
@@ -144,10 +146,10 @@ namespace WebUI.domain.Controllers
                 };
 
                 IdentityResult identityResult = await _userManager.CreateAsync(user);
-                if(identityResult.Succeeded)
+                if (identityResult.Succeeded)
                 {
                     identityResult = await _userManager.AddLoginAsync(user, info);
-                    if(identityResult.Succeeded)
+                    if (identityResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, false);
                         return RedirectToAction("HomePage");
@@ -180,9 +182,9 @@ namespace WebUI.domain.Controllers
             if (user.Email == userInfo[1])
             {
                 await _signInManager.SignInAsync(user, false);
-               
+
             }
-                
+
             else
             {
                 return RedirectToAction("Login");
@@ -259,7 +261,7 @@ namespace WebUI.domain.Controllers
                     UserId = user.Id,
                     CreatedBy = User.GetUserName(),
                     CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now, 
+                    UpdatedAt = DateTime.Now,
                 };
                 await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
                 var customerAddReport = _customerService.Add(model);
@@ -272,9 +274,9 @@ namespace WebUI.domain.Controllers
                 TempData["EnrollSuccess"] = "Enrollment Was Successful!";
 
                 //Send Mail To User With Credentials
-               var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
-                var client = new SendGridClient(apiKey);                
-              var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
+                var apiKey = "SG.WA0Rvsa6RkCO_mRHtrkvHQ.ZGKJnm0lJIAQkf5dUbjcUdQLWCwZl - HxZFKUX2Da_8w";
+                var client = new SendGridClient(apiKey);
+                var from = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
                 var subject = "Sending with SendGrid is Fun";
                 var to = new EmailAddress("ogubuikealex@gmail.com", "SHeX");
                 var plainTextContent = "and easy to do anywhere, even with C#";
@@ -291,7 +293,7 @@ namespace WebUI.domain.Controllers
             }
             return View();
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
@@ -303,15 +305,15 @@ namespace WebUI.domain.Controllers
         [Authorize]
         public async Task<IActionResult> HomePage()
         {
-            Account account = null; 
+            Account account = null;
             var model = await _userManager.FindByIdAsync(User.GetUserId());
             var customer = _customerService.GetCustomer(model.Id);
             var transactions = _transactionService.GetAll();
             if (customer == null) goto end;
             account = _accountService.Get(customer.AccountId);
-        
-           end:
-            return View(Tuple.Create(model,account,transactions));
+
+        end:
+            return View(Tuple.Create(model, account, transactions));
         }
         [Authorize]
         public async Task<IActionResult> ViewAll()
@@ -361,10 +363,20 @@ namespace WebUI.domain.Controllers
         {
 
             var currentUserId = await _userManager.FindByIdAsync(model.Id);
-            
+
             currentUserId.Email = model.Email;
             currentUserId.FullName = $"{model.FirstName} {model.LastName}";
             currentUserId.PhoneNumber = model.PhoneNumber;
+            currentUserId.ProfilePicture = model.ProfilePicture;
+            if (Request.Form.Files.Count > 0)
+            {
+                IFormFile file = Request.Form.Files.FirstOrDefault();
+                using (var dataStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(dataStream);
+                    currentUserId.ProfilePicture = dataStream.ToArray();
+                }
+            }
 
             await _userManager.UpdateAsync(currentUserId);
             return RedirectToAction("ViewAll");
@@ -394,12 +406,12 @@ namespace WebUI.domain.Controllers
                 UserName = model.Email,
                 StillHasDefaultPassword = true,
             };
-           var randPassword = "Alex-1234";
-           // var randPassword = PasswordGenerator.GeneratePassword(model.FullName[0], model.FullName[model.FullName.Length-1]);            
+            var randPassword = "Alex-1234";
+            // var randPassword = PasswordGenerator.GeneratePassword(model.FullName[0], model.FullName[model.FullName.Length-1]);            
             var result = await _userManager.CreateAsync(user, randPassword);
             return (result, user);
         }
 
-        
+
     }
 }
