@@ -34,6 +34,7 @@ namespace WebUI.domain
             services.AddDBConnection(Configuration);
             services.AddControllersWithViews();
 
+            services.ConfigureRepositoryManager();
             services.AddScoped<DbContext, AppDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();

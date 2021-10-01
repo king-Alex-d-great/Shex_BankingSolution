@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Domain.Entities;
 using WebUI.domain.Interfaces.Services;
 using WebUI.domain.Services;
+using OnlineBanking.Domain.Interfaces.Repositories;
+using OnlineBanking.Domain.Repositories;
 
 namespace WebUI.domain.Middlewares
 {
@@ -37,5 +39,8 @@ namespace WebUI.domain.Middlewares
 
             return services;
         }
+
+        public static void ConfigureRepositoryManager(this IServiceCollection services) =>
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
     }
 }

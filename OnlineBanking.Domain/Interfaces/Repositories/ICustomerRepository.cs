@@ -7,5 +7,6 @@ namespace OnlineBanking.Domain.Interfaces.Repositories
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
+        IEnumerable<Customer> GetAllCustomer();
     }
 }

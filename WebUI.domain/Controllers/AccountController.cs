@@ -367,7 +367,9 @@ namespace WebUI.domain.Controllers
                 FirstName = user.FullName.Split(' ')[0],
                 LastName = user.FullName.Split(' ')[1],
                 Email = user.Email,
-                ProfilePicture = user.ProfilePicture
+                ProfilePicture = user.ProfilePicture,
+                PhoneNumber = user.PhoneNumber
+                
             };       
             return View(updatemodel);
         }

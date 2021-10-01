@@ -1,8 +1,9 @@
-﻿@model Tuple<User, Account, List<Transaction>>
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
+@using WebUI.domain.Models
+@model Tuple<User, Account,List<Transaction>, UpdateViewModel>
 @inject UserManager<User>  userManager
 @{
-    ViewData["Title"] = "Home Page";   
+    ViewData["Title"] = "Home Page";
 }
 
 <div class="homePage-start">
@@ -25,17 +26,46 @@
             </div>
         </div>
 
-        <div class="row media">
+        <!--<div class="row media">
             <div class="tm-block-col col-6 tm-col-avatar">
                 <div class="tm-block tm-block-avatar">
                     <div class="tm-avatar-container">
                         <img src="~/images/Avatar-Alex.png"
                              alt="Avatar"
                              class="tm-avatar img-fluid mb-4" />
+                    </div>-->
+        @*<button class="btn btn-primary btn-block text-uppercase">
+                Upload New Photo
+            </button>*@
+        <!--</div>
+        </div>-->
+
+
+        <div class="row media">
+            <div class="tm-block-col col-6 tm-col-avatar">
+                <div class="tm-block tm-block-avatar">
+                    <div class="tm-avatar-container">
+                        
+                            <div class="form-group">
+                                <label asp-for="Item4.ProfilePicture" style="width: 100%;"></label>
+                                @if (Model.Item4.ProfilePicture != null)
+                                {
+                                    <img id="profilePicture" style="width:350px;height:350px; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(Model.Item4.ProfilePicture))">
+                                }
+                                else
+                                {
+                                    <img id="profilePicture" style="width:350px;height:350px; object-fit:cover" src="">
+                                }
+                                <input type="file"
+                                       accept=".png,.jpg,.jpeg,.gif,.tif"
+                                       asp-for="Item4.ProfilePicture"
+                                       class="form-control"
+                                       style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                                       onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])" />
+                                <span asp-validation-for="Item4.ProfilePicture" class="text-danger"></span>
+                            </div>
+                        
                     </div>
-                    @*<button class="btn btn-primary btn-block text-uppercase">
-                            Upload New Photo
-                        </button>*@
                 </div>
             </div>
 
@@ -145,7 +175,7 @@
         <h2 class="tm-block-title">Transaction List</h2>
         <table class="table">
             <thead>
-                <tr>                    
+                <tr>
                     <th scope="col">STATUS</th>
                     <th scope="col">TYPE</th>
                     <th scope="col">MODE</th>
@@ -157,24 +187,24 @@
             </thead>
             <tbody>
                 @* @foreach (var item in Model?.Item3.Take(5))
-        {
-            <tr>
+                    {
+                        <tr>
 
-                <td>
-                    <div class="tm-status-circle moving">
-                    </div>Successful
-                </td>
-                <td><b>@item?.TransactionType</b></td>
-                <td><b>@item?.TransactionMode</b></td>
-                <td><b>@item?.Amount</b></td>
-                <td><b>@item?.SenderAccount</b></td>
-                <td><b>@item?.ReceiverAccount</b></td>
-                <td><b>@item?.TimeStamp</b></td>
-            </tr>
-        }*@
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Successful
+                            </td>
+                            <td><b>@item?.TransactionType</b></td>
+                            <td><b>@item?.TransactionMode</b></td>
+                            <td><b>@item?.Amount</b></td>
+                            <td><b>@item?.SenderAccount</b></td>
+                            <td><b>@item?.ReceiverAccount</b></td>
+                            <td><b>@item?.TimeStamp</b></td>
+                        </tr>
+                    }*@
 
-                @for (var i = Model.Item3.Count - 1; i >= 0; i--)               
-                 {
+                @for (var i = Model.Item3.Count - 1; i >= 0; i--)
+                {
                     <tr>
                         <td>
                             <div class="tm-status-circle moving">
@@ -186,8 +216,9 @@
                         <td><b>@Model.Item3[i].SenderAccount</b></td>
                         <td><b>@Model.Item3[i].ReceiverAccount</b></td>
                         <td><b>@Model.Item3[i].TimeStamp</b></td>
-                    </tr>                     
-                 }
+                    </tr>
+
+                }
             </tbody>
         </table>
     </div>
