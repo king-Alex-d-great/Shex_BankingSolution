@@ -320,9 +320,9 @@ namespace WebUI.domain.Controllers
             var transactionList = transactions.Skip(transactions.Count() - 5).ToList();
             if (customer == null) goto end;
             account = _accountService.Get(customer.AccountId);
-
+             
         end:
-            return View(Tuple.Create(model, account, transactionList));
+            return View(Tuple.Create(model, account, transactionList, new UpdateViewModel {Email = model.Email, FirstName = model.FullName, PhoneNumber = model.PhoneNumber, ProfilePicture = model.ProfilePicture  }));
         }
        
         private async Task<List<string>> GetUserRoles(User user)
@@ -368,8 +368,7 @@ namespace WebUI.domain.Controllers
                 LastName = user.FullName.Split(' ')[1],
                 Email = user.Email,
                 ProfilePicture = user.ProfilePicture,
-                PhoneNumber = user.PhoneNumber
-                
+                PhoneNumber = user.PhoneNumber                
             };       
             return View(updatemodel);
         }
